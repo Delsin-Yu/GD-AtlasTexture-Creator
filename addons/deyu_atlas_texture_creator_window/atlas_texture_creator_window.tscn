@@ -1,0 +1,733 @@
+[gd_scene load_steps=2 format=3 uid="uid://deqj2mqv43cr8"]
+
+[ext_resource type="Script" path="res://addons/deyu_atlas_texture_creator_window/UnityAtlasTextureCreator.cs" id="1_mppxe"]
+
+[node name="atlas_texture_creator_window" type="Control" node_paths=PackedStringArray("SnapModeButton", "AtlasTextureSlicerButton", "ScanAtlasInFolderButton", "ScanAtlasInProjectButton", "EditDrawer", "ZoomInButton", "ZoomResetButton", "ZoomOutButton", "VScroll", "HScroll", "MiniInspectorWindow", "NewItemLabel", "DeleteItemButton", "AtlasTextureNameInput", "AtlasTextureRegionXInput", "AtlasTextureRegionYInput", "AtlasTextureRegionWInput", "AtlasTextureRegionHInput", "AtlasTextureMarginXInput", "AtlasTextureMarginYInput", "AtlasTextureMarginWInput", "AtlasTextureMarginHInput", "AtlasTextureFilterClipInput", "DiscardButton", "SaveAndUpdateButton", "SlicerMenu", "SlicerTypeSelection", "PreservationMethodSelection", "ExecuteSliceButton", "NewAtlasTextureMarginXInput", "NewAtlasTextureMarginYInput", "NewAtlasTextureMarginWInput", "NewAtlasTextureMarginHInput", "FilterClip", "CellSizeGroup", "CellSize_PixelSizeX", "CellSize_PixelSizeY", "CellSize_OffsetX", "CellSize_OffsetY", "CellSize_PaddingX", "CellSize_PaddingY", "CellSize_KeepEmptyRects", "CellCountGroup", "CellCount_ColumnRowX", "CellCount_ColumnRowY", "CellCount_OffsetX", "CellCount_OffsetY", "CellCount_PaddingX", "CellCount_PaddingY", "CellCount_KeepEmptyRects")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_mppxe")
+SnapModeButton = NodePath("VBoxContainer/ScrollContainer/HBoxContainer/SnapModeButton")
+AtlasTextureSlicerButton = NodePath("VBoxContainer/ScrollContainer/HBoxContainer/SlicerButton")
+ScanAtlasInFolderButton = NodePath("VBoxContainer/ScrollContainer/HBoxContainer/ScanAtlasTextureInFolderButton")
+ScanAtlasInProjectButton = NodePath("VBoxContainer/ScrollContainer/HBoxContainer/ScanAtlasTextureInProjectButton")
+EditDrawer = NodePath("VBoxContainer/EditorViewport/Painter")
+ZoomInButton = NodePath("VBoxContainer/EditorViewport/Painter/HBoxContainer/ZoomInButton")
+ZoomResetButton = NodePath("VBoxContainer/EditorViewport/Painter/HBoxContainer/ZoomResetButton")
+ZoomOutButton = NodePath("VBoxContainer/EditorViewport/Painter/HBoxContainer/ZoomOutButton")
+VScroll = NodePath("VBoxContainer/EditorViewport/Painter/VScrollBar")
+HScroll = NodePath("VBoxContainer/EditorViewport/Painter/HScrollBar")
+MiniInspectorWindow = NodePath("VBoxContainer/EditorViewport/AtlasTextureMiniInspector")
+NewItemLabel = NodePath("VBoxContainer/EditorViewport/AtlasTextureMiniInspector/MarginContainer/VBoxContainer/HBoxContainer/NewIndicator")
+DeleteItemButton = NodePath("VBoxContainer/EditorViewport/AtlasTextureMiniInspector/MarginContainer/VBoxContainer/HBoxContainer/DeleteButton")
+AtlasTextureNameInput = NodePath("VBoxContainer/EditorViewport/AtlasTextureMiniInspector/MarginContainer/VBoxContainer/GridContainer/NameEdit")
+AtlasTextureRegionXInput = NodePath("VBoxContainer/EditorViewport/AtlasTextureMiniInspector/MarginContainer/VBoxContainer/GridContainer/GridContainer/XEdit")
+AtlasTextureRegionYInput = NodePath("VBoxContainer/EditorViewport/AtlasTextureMiniInspector/MarginContainer/VBoxContainer/GridContainer/GridContainer/YEdit")
+AtlasTextureRegionWInput = NodePath("VBoxContainer/EditorViewport/AtlasTextureMiniInspector/MarginContainer/VBoxContainer/GridContainer/GridContainer/WEdit")
+AtlasTextureRegionHInput = NodePath("VBoxContainer/EditorViewport/AtlasTextureMiniInspector/MarginContainer/VBoxContainer/GridContainer/GridContainer/HEdit")
+AtlasTextureMarginXInput = NodePath("VBoxContainer/EditorViewport/AtlasTextureMiniInspector/MarginContainer/VBoxContainer/GridContainer/GridContainer2/XEdit2")
+AtlasTextureMarginYInput = NodePath("VBoxContainer/EditorViewport/AtlasTextureMiniInspector/MarginContainer/VBoxContainer/GridContainer/GridContainer2/YEdit2")
+AtlasTextureMarginWInput = NodePath("VBoxContainer/EditorViewport/AtlasTextureMiniInspector/MarginContainer/VBoxContainer/GridContainer/GridContainer2/WEdit2")
+AtlasTextureMarginHInput = NodePath("VBoxContainer/EditorViewport/AtlasTextureMiniInspector/MarginContainer/VBoxContainer/GridContainer/GridContainer2/HEdit2")
+AtlasTextureFilterClipInput = NodePath("VBoxContainer/EditorViewport/AtlasTextureMiniInspector/MarginContainer/VBoxContainer/GridContainer/FilterClipEnable")
+DiscardButton = NodePath("VBoxContainer/SaveButtonSet/DiscardButton")
+SaveAndUpdateButton = NodePath("VBoxContainer/SaveButtonSet/CreateUpdateButton")
+SlicerMenu = NodePath("SlicerSubview")
+SlicerTypeSelection = NodePath("SlicerSubview/MarginContainer/VBoxContainer/GridContainer/SliceTypeOption")
+PreservationMethodSelection = NodePath("SlicerSubview/MarginContainer/VBoxContainer/GridContainer/SliceMethodOption")
+ExecuteSliceButton = NodePath("SlicerSubview/MarginContainer/VBoxContainer/ExcuteSliceButton")
+NewAtlasTextureMarginXInput = NodePath("SlicerSubview/MarginContainer/VBoxContainer/GridContainer/GridContainer3/XEdit2")
+NewAtlasTextureMarginYInput = NodePath("SlicerSubview/MarginContainer/VBoxContainer/GridContainer/GridContainer3/YEdit2")
+NewAtlasTextureMarginWInput = NodePath("SlicerSubview/MarginContainer/VBoxContainer/GridContainer/GridContainer3/WEdit2")
+NewAtlasTextureMarginHInput = NodePath("SlicerSubview/MarginContainer/VBoxContainer/GridContainer/GridContainer3/HEdit2")
+FilterClip = NodePath("SlicerSubview/MarginContainer/VBoxContainer/GridContainer/FilterClipCheckBox")
+CellSizeGroup = []
+CellSize_PixelSizeX = NodePath("SlicerSubview/MarginContainer/VBoxContainer/GridContainer/HBoxContainer/XValue")
+CellSize_PixelSizeY = NodePath("SlicerSubview/MarginContainer/VBoxContainer/GridContainer/HBoxContainer/YValue")
+CellSize_OffsetX = NodePath("SlicerSubview/MarginContainer/VBoxContainer/GridContainer/HBoxContainer2/XValue")
+CellSize_OffsetY = NodePath("SlicerSubview/MarginContainer/VBoxContainer/GridContainer/HBoxContainer2/YValue")
+CellSize_PaddingX = NodePath("SlicerSubview/MarginContainer/VBoxContainer/GridContainer/HBoxContainer3/XValue")
+CellSize_PaddingY = NodePath("SlicerSubview/MarginContainer/VBoxContainer/GridContainer/HBoxContainer3/YValue")
+CellSize_KeepEmptyRects = NodePath("SlicerSubview/MarginContainer/VBoxContainer/GridContainer/KeepEmptyRectCheckBox")
+CellCountGroup = []
+CellCount_ColumnRowX = NodePath("SlicerSubview/MarginContainer/VBoxContainer/GridContainer/HBoxContainer4/XValue")
+CellCount_ColumnRowY = NodePath("SlicerSubview/MarginContainer/VBoxContainer/GridContainer/HBoxContainer4/YValue")
+CellCount_OffsetX = NodePath("SlicerSubview/MarginContainer/VBoxContainer/GridContainer/HBoxContainer5/XValue")
+CellCount_OffsetY = NodePath("SlicerSubview/MarginContainer/VBoxContainer/GridContainer/HBoxContainer5/YValue")
+CellCount_PaddingX = NodePath("SlicerSubview/MarginContainer/VBoxContainer/GridContainer/HBoxContainer6/XValue")
+CellCount_PaddingY = NodePath("SlicerSubview/MarginContainer/VBoxContainer/GridContainer/HBoxContainer6/YValue")
+CellCount_KeepEmptyRects = NodePath("SlicerSubview/MarginContainer/VBoxContainer/GridContainer/KeepEmptyRecCheckBox")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer"]
+layout_mode = 2
+vertical_scroll_mode = 0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="SnapModeLabel" type="Label" parent="VBoxContainer/ScrollContainer/HBoxContainer"]
+layout_mode = 2
+text = "Snap Mode:"
+
+[node name="SnapModeButton" type="OptionButton" parent="VBoxContainer/ScrollContainer/HBoxContainer"]
+layout_mode = 2
+item_count = 2
+selected = 0
+popup/item_0/text = "None"
+popup/item_0/id = 0
+popup/item_1/text = "Pixel Snap"
+popup/item_1/id = 1
+
+[node name="SlicerButton" type="CheckButton" parent="VBoxContainer/ScrollContainer/HBoxContainer"]
+layout_mode = 2
+text = "AtlasTexture Slicer"
+
+[node name="Spacer" type="Control" parent="VBoxContainer/ScrollContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ScanAtlasTextureInFolderButton" type="Button" parent="VBoxContainer/ScrollContainer/HBoxContainer"]
+layout_mode = 2
+text = "Scan AtlasTexture In Folder"
+
+[node name="ScanAtlasTextureInProjectButton" type="Button" parent="VBoxContainer/ScrollContainer/HBoxContainer"]
+layout_mode = 2
+text = "Scan AtlasTexture In Project"
+
+[node name="EditorViewport" type="Panel" parent="VBoxContainer"]
+clip_contents = true
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Painter" type="Control" parent="VBoxContainer/EditorViewport"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/EditorViewport/Painter"]
+layout_mode = 0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = 45.0
+offset_bottom = 45.0
+
+[node name="ZoomInButton" type="Button" parent="VBoxContainer/EditorViewport/Painter/HBoxContainer"]
+layout_mode = 2
+flat = true
+
+[node name="ZoomResetButton" type="Button" parent="VBoxContainer/EditorViewport/Painter/HBoxContainer"]
+layout_mode = 2
+flat = true
+
+[node name="ZoomOutButton" type="Button" parent="VBoxContainer/EditorViewport/Painter/HBoxContainer"]
+layout_mode = 2
+flat = true
+
+[node name="VScrollBar" type="VScrollBar" parent="VBoxContainer/EditorViewport/Painter"]
+layout_mode = 1
+anchors_preset = 11
+anchor_left = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -8.0
+grow_horizontal = 0
+grow_vertical = 2
+step = 0.001
+
+[node name="HScrollBar" type="HScrollBar" parent="VBoxContainer/EditorViewport/Painter"]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -8.0
+grow_horizontal = 2
+grow_vertical = 0
+step = 0.001
+
+[node name="AtlasTextureMiniInspector" type="PanelContainer" parent="VBoxContainer/EditorViewport"]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -336.0
+offset_top = -277.0
+offset_right = -15.0
+offset_bottom = -16.0
+grow_horizontal = 0
+grow_vertical = 0
+
+[node name="Panel" type="Panel" parent="VBoxContainer/EditorViewport/AtlasTextureMiniInspector"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/EditorViewport/AtlasTextureMiniInspector"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/EditorViewport/AtlasTextureMiniInspector/MarginContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/EditorViewport/AtlasTextureMiniInspector/MarginContainer/VBoxContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="Spacer" type="Control" parent="VBoxContainer/EditorViewport/AtlasTextureMiniInspector/MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Title" type="Label" parent="VBoxContainer/EditorViewport/AtlasTextureMiniInspector/MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "Atlas Texture"
+horizontal_alignment = 1
+
+[node name="NewIndicator" type="Label" parent="VBoxContainer/EditorViewport/AtlasTextureMiniInspector/MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "(New)"
+horizontal_alignment = 1
+
+[node name="Spacer2" type="Control" parent="VBoxContainer/EditorViewport/AtlasTextureMiniInspector/MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DeleteButton" type="Button" parent="VBoxContainer/EditorViewport/AtlasTextureMiniInspector/MarginContainer/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(30, 0)
+layout_mode = 2
+text = "X"
+
+[node name="GridContainer" type="GridContainer" parent="VBoxContainer/EditorViewport/AtlasTextureMiniInspector/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/h_separation = 20
+columns = 2
+
+[node name="Name" type="Label" parent="VBoxContainer/EditorViewport/AtlasTextureMiniInspector/MarginContainer/VBoxContainer/GridContainer"]
+layout_mode = 2
+text = "Name"
+
+[node name="NameEdit" type="LineEdit" parent="VBoxContainer/EditorViewport/AtlasTextureMiniInspector/MarginContainer/VBoxContainer/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+draw_control_chars = true
+select_all_on_focus = true
+
+[node name="Region" type="Label" parent="VBoxContainer/EditorViewport/AtlasTextureMiniInspector/MarginContainer/VBoxContainer/GridContainer"]
+layout_mode = 2
+text = "Region"
+
+[node name="GridContainer" type="GridContainer" parent="VBoxContainer/EditorViewport/AtlasTextureMiniInspector/MarginContainer/VBoxContainer/GridContainer"]
+layout_mode = 2
+columns = 4
+
+[node name="X" type="Label" parent="VBoxContainer/EditorViewport/AtlasTextureMiniInspector/MarginContainer/VBoxContainer/GridContainer/GridContainer"]
+layout_mode = 2
+text = "X"
+horizontal_alignment = 1
+
+[node name="XEdit" type="SpinBox" parent="VBoxContainer/EditorViewport/AtlasTextureMiniInspector/MarginContainer/VBoxContainer/GridContainer/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+max_value = 0.0
+allow_greater = true
+allow_lesser = true
+suffix = "px"
+
+[node name="Y" type="Label" parent="VBoxContainer/EditorViewport/AtlasTextureMiniInspector/MarginContainer/VBoxContainer/GridContainer/GridContainer"]
+layout_mode = 2
+text = "Y"
+horizontal_alignment = 1
+
+[node name="YEdit" type="SpinBox" parent="VBoxContainer/EditorViewport/AtlasTextureMiniInspector/MarginContainer/VBoxContainer/GridContainer/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+max_value = 0.0
+allow_greater = true
+allow_lesser = true
+suffix = "px"
+
+[node name="W" type="Label" parent="VBoxContainer/EditorViewport/AtlasTextureMiniInspector/MarginContainer/VBoxContainer/GridContainer/GridContainer"]
+layout_mode = 2
+text = "W"
+horizontal_alignment = 1
+
+[node name="WEdit" type="SpinBox" parent="VBoxContainer/EditorViewport/AtlasTextureMiniInspector/MarginContainer/VBoxContainer/GridContainer/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+max_value = 0.0
+allow_greater = true
+allow_lesser = true
+suffix = "px"
+
+[node name="H" type="Label" parent="VBoxContainer/EditorViewport/AtlasTextureMiniInspector/MarginContainer/VBoxContainer/GridContainer/GridContainer"]
+layout_mode = 2
+text = "H"
+horizontal_alignment = 1
+
+[node name="HEdit" type="SpinBox" parent="VBoxContainer/EditorViewport/AtlasTextureMiniInspector/MarginContainer/VBoxContainer/GridContainer/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+max_value = 0.0
+allow_greater = true
+allow_lesser = true
+suffix = "px"
+
+[node name="Margin" type="Label" parent="VBoxContainer/EditorViewport/AtlasTextureMiniInspector/MarginContainer/VBoxContainer/GridContainer"]
+layout_mode = 2
+text = "Margin"
+
+[node name="GridContainer2" type="GridContainer" parent="VBoxContainer/EditorViewport/AtlasTextureMiniInspector/MarginContainer/VBoxContainer/GridContainer"]
+layout_mode = 2
+columns = 4
+
+[node name="X" type="Label" parent="VBoxContainer/EditorViewport/AtlasTextureMiniInspector/MarginContainer/VBoxContainer/GridContainer/GridContainer2"]
+layout_mode = 2
+text = "X"
+horizontal_alignment = 1
+
+[node name="XEdit2" type="SpinBox" parent="VBoxContainer/EditorViewport/AtlasTextureMiniInspector/MarginContainer/VBoxContainer/GridContainer/GridContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+max_value = 0.0
+allow_greater = true
+allow_lesser = true
+suffix = "px"
+select_all_on_focus = true
+
+[node name="Y" type="Label" parent="VBoxContainer/EditorViewport/AtlasTextureMiniInspector/MarginContainer/VBoxContainer/GridContainer/GridContainer2"]
+layout_mode = 2
+text = "Y"
+horizontal_alignment = 1
+
+[node name="YEdit2" type="SpinBox" parent="VBoxContainer/EditorViewport/AtlasTextureMiniInspector/MarginContainer/VBoxContainer/GridContainer/GridContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+max_value = 0.0
+allow_greater = true
+allow_lesser = true
+suffix = "px"
+select_all_on_focus = true
+
+[node name="W" type="Label" parent="VBoxContainer/EditorViewport/AtlasTextureMiniInspector/MarginContainer/VBoxContainer/GridContainer/GridContainer2"]
+layout_mode = 2
+text = "W"
+horizontal_alignment = 1
+
+[node name="WEdit2" type="SpinBox" parent="VBoxContainer/EditorViewport/AtlasTextureMiniInspector/MarginContainer/VBoxContainer/GridContainer/GridContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+max_value = 0.0
+allow_greater = true
+allow_lesser = true
+suffix = "px"
+select_all_on_focus = true
+
+[node name="H" type="Label" parent="VBoxContainer/EditorViewport/AtlasTextureMiniInspector/MarginContainer/VBoxContainer/GridContainer/GridContainer2"]
+layout_mode = 2
+text = "H"
+horizontal_alignment = 1
+
+[node name="HEdit2" type="SpinBox" parent="VBoxContainer/EditorViewport/AtlasTextureMiniInspector/MarginContainer/VBoxContainer/GridContainer/GridContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+max_value = 0.0
+allow_greater = true
+allow_lesser = true
+suffix = "px"
+select_all_on_focus = true
+
+[node name="FilterClip" type="Label" parent="VBoxContainer/EditorViewport/AtlasTextureMiniInspector/MarginContainer/VBoxContainer/GridContainer"]
+layout_mode = 2
+text = "Filter Clip"
+
+[node name="FilterClipEnable" type="CheckBox" parent="VBoxContainer/EditorViewport/AtlasTextureMiniInspector/MarginContainer/VBoxContainer/GridContainer"]
+layout_mode = 2
+text = "Enable"
+
+[node name="SaveButtonSet" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="Spacer" type="Control" parent="VBoxContainer/SaveButtonSet"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DiscardButton" type="Button" parent="VBoxContainer/SaveButtonSet"]
+layout_mode = 2
+text = "Discard"
+
+[node name="CreateUpdateButton" type="Button" parent="VBoxContainer/SaveButtonSet"]
+layout_mode = 2
+text = "Create / Update"
+
+[node name="SlicerSubview" type="PanelContainer" parent="."]
+layout_mode = 2
+offset_left = 224.0
+offset_top = 40.0
+offset_right = 608.0
+offset_bottom = 151.0
+
+[node name="Panel" type="Panel" parent="SlicerSubview"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="SlicerSubview"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="SlicerSubview/MarginContainer"]
+layout_mode = 2
+
+[node name="GridContainer" type="GridContainer" parent="SlicerSubview/MarginContainer/VBoxContainer"]
+layout_mode = 2
+columns = 2
+
+[node name="SliceTypeLabel" type="Label" parent="SlicerSubview/MarginContainer/VBoxContainer/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Type"
+
+[node name="SliceTypeOption" type="OptionButton" parent="SlicerSubview/MarginContainer/VBoxContainer/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="PixelSizeLabel" type="Label" parent="SlicerSubview/MarginContainer/VBoxContainer/GridContainer"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Pixel Size"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="SlicerSubview/MarginContainer/VBoxContainer/GridContainer"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 2.0
+
+[node name="XLabel" type="Label" parent="SlicerSubview/MarginContainer/VBoxContainer/GridContainer/HBoxContainer"]
+layout_mode = 2
+text = "X"
+
+[node name="XValue" type="SpinBox" parent="SlicerSubview/MarginContainer/VBoxContainer/GridContainer/HBoxContainer"]
+layout_mode = 2
+min_value = 1.0
+value = 100.0
+rounded = true
+allow_greater = true
+select_all_on_focus = true
+
+[node name="YLabel" type="Label" parent="SlicerSubview/MarginContainer/VBoxContainer/GridContainer/HBoxContainer"]
+layout_mode = 2
+text = "Y
+"
+
+[node name="YValue" type="SpinBox" parent="SlicerSubview/MarginContainer/VBoxContainer/GridContainer/HBoxContainer"]
+layout_mode = 2
+min_value = 1.0
+value = 100.0
+rounded = true
+allow_greater = true
+select_all_on_focus = true
+
+[node name="OffsetLabel" type="Label" parent="SlicerSubview/MarginContainer/VBoxContainer/GridContainer"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Offset"
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="SlicerSubview/MarginContainer/VBoxContainer/GridContainer"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 2.0
+
+[node name="XLabel" type="Label" parent="SlicerSubview/MarginContainer/VBoxContainer/GridContainer/HBoxContainer2"]
+layout_mode = 2
+text = "X"
+
+[node name="XValue" type="SpinBox" parent="SlicerSubview/MarginContainer/VBoxContainer/GridContainer/HBoxContainer2"]
+layout_mode = 2
+rounded = true
+allow_greater = true
+allow_lesser = true
+select_all_on_focus = true
+
+[node name="YLabel" type="Label" parent="SlicerSubview/MarginContainer/VBoxContainer/GridContainer/HBoxContainer2"]
+layout_mode = 2
+text = "Y
+"
+
+[node name="YValue" type="SpinBox" parent="SlicerSubview/MarginContainer/VBoxContainer/GridContainer/HBoxContainer2"]
+layout_mode = 2
+rounded = true
+allow_greater = true
+allow_lesser = true
+select_all_on_focus = true
+
+[node name="MarginLabel" type="Label" parent="SlicerSubview/MarginContainer/VBoxContainer/GridContainer"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Padding"
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="SlicerSubview/MarginContainer/VBoxContainer/GridContainer"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 2.0
+
+[node name="XLabel" type="Label" parent="SlicerSubview/MarginContainer/VBoxContainer/GridContainer/HBoxContainer3"]
+layout_mode = 2
+text = "X"
+
+[node name="XValue" type="SpinBox" parent="SlicerSubview/MarginContainer/VBoxContainer/GridContainer/HBoxContainer3"]
+layout_mode = 2
+allow_greater = true
+allow_lesser = true
+select_all_on_focus = true
+
+[node name="YLabel" type="Label" parent="SlicerSubview/MarginContainer/VBoxContainer/GridContainer/HBoxContainer3"]
+layout_mode = 2
+text = "Y
+"
+
+[node name="YValue" type="SpinBox" parent="SlicerSubview/MarginContainer/VBoxContainer/GridContainer/HBoxContainer3"]
+layout_mode = 2
+allow_greater = true
+allow_lesser = true
+select_all_on_focus = true
+
+[node name="KeepEmptyRectLabel" type="Label" parent="SlicerSubview/MarginContainer/VBoxContainer/GridContainer"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Keep Empty Rect"
+
+[node name="KeepEmptyRectCheckBox" type="CheckBox" parent="SlicerSubview/MarginContainer/VBoxContainer/GridContainer"]
+visible = false
+layout_mode = 2
+text = "Enable"
+
+[node name="CRLabel" type="Label" parent="SlicerSubview/MarginContainer/VBoxContainer/GridContainer"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Column & Row"
+
+[node name="HBoxContainer4" type="HBoxContainer" parent="SlicerSubview/MarginContainer/VBoxContainer/GridContainer"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 2.0
+
+[node name="XLabel" type="Label" parent="SlicerSubview/MarginContainer/VBoxContainer/GridContainer/HBoxContainer4"]
+layout_mode = 2
+text = "X"
+
+[node name="XValue" type="SpinBox" parent="SlicerSubview/MarginContainer/VBoxContainer/GridContainer/HBoxContainer4"]
+layout_mode = 2
+min_value = 1.0
+value = 1.0
+rounded = true
+allow_greater = true
+select_all_on_focus = true
+
+[node name="YLabel" type="Label" parent="SlicerSubview/MarginContainer/VBoxContainer/GridContainer/HBoxContainer4"]
+layout_mode = 2
+text = "Y
+"
+
+[node name="YValue" type="SpinBox" parent="SlicerSubview/MarginContainer/VBoxContainer/GridContainer/HBoxContainer4"]
+layout_mode = 2
+min_value = 1.0
+value = 1.0
+rounded = true
+allow_greater = true
+select_all_on_focus = true
+
+[node name="OffsetLabel2" type="Label" parent="SlicerSubview/MarginContainer/VBoxContainer/GridContainer"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Offset"
+
+[node name="HBoxContainer5" type="HBoxContainer" parent="SlicerSubview/MarginContainer/VBoxContainer/GridContainer"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 2.0
+
+[node name="XLabel" type="Label" parent="SlicerSubview/MarginContainer/VBoxContainer/GridContainer/HBoxContainer5"]
+layout_mode = 2
+text = "X"
+
+[node name="XValue" type="SpinBox" parent="SlicerSubview/MarginContainer/VBoxContainer/GridContainer/HBoxContainer5"]
+layout_mode = 2
+allow_greater = true
+allow_lesser = true
+select_all_on_focus = true
+
+[node name="YLabel" type="Label" parent="SlicerSubview/MarginContainer/VBoxContainer/GridContainer/HBoxContainer5"]
+layout_mode = 2
+text = "Y
+"
+
+[node name="YValue" type="SpinBox" parent="SlicerSubview/MarginContainer/VBoxContainer/GridContainer/HBoxContainer5"]
+layout_mode = 2
+allow_greater = true
+allow_lesser = true
+select_all_on_focus = true
+
+[node name="MarginLabel2" type="Label" parent="SlicerSubview/MarginContainer/VBoxContainer/GridContainer"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Padding"
+
+[node name="HBoxContainer6" type="HBoxContainer" parent="SlicerSubview/MarginContainer/VBoxContainer/GridContainer"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 2.0
+
+[node name="XLabel" type="Label" parent="SlicerSubview/MarginContainer/VBoxContainer/GridContainer/HBoxContainer6"]
+layout_mode = 2
+text = "X"
+
+[node name="XValue" type="SpinBox" parent="SlicerSubview/MarginContainer/VBoxContainer/GridContainer/HBoxContainer6"]
+layout_mode = 2
+allow_greater = true
+allow_lesser = true
+select_all_on_focus = true
+
+[node name="YLabel" type="Label" parent="SlicerSubview/MarginContainer/VBoxContainer/GridContainer/HBoxContainer6"]
+layout_mode = 2
+text = "Y
+"
+
+[node name="YValue" type="SpinBox" parent="SlicerSubview/MarginContainer/VBoxContainer/GridContainer/HBoxContainer6"]
+layout_mode = 2
+allow_greater = true
+allow_lesser = true
+select_all_on_focus = true
+
+[node name="KeepEmptyRectLabel2" type="Label" parent="SlicerSubview/MarginContainer/VBoxContainer/GridContainer"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Keep Empty Rect"
+
+[node name="KeepEmptyRecCheckBox" type="CheckBox" parent="SlicerSubview/MarginContainer/VBoxContainer/GridContainer"]
+visible = false
+layout_mode = 2
+text = "Enable"
+
+[node name="MarginLabel3" type="Label" parent="SlicerSubview/MarginContainer/VBoxContainer/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Margin"
+
+[node name="GridContainer3" type="GridContainer" parent="SlicerSubview/MarginContainer/VBoxContainer/GridContainer"]
+layout_mode = 2
+columns = 4
+
+[node name="X" type="Label" parent="SlicerSubview/MarginContainer/VBoxContainer/GridContainer/GridContainer3"]
+layout_mode = 2
+text = "X"
+horizontal_alignment = 1
+
+[node name="XEdit2" type="SpinBox" parent="SlicerSubview/MarginContainer/VBoxContainer/GridContainer/GridContainer3"]
+layout_mode = 2
+size_flags_horizontal = 3
+max_value = 0.0
+allow_greater = true
+allow_lesser = true
+suffix = "px"
+select_all_on_focus = true
+
+[node name="Y" type="Label" parent="SlicerSubview/MarginContainer/VBoxContainer/GridContainer/GridContainer3"]
+layout_mode = 2
+text = "Y"
+horizontal_alignment = 1
+
+[node name="YEdit2" type="SpinBox" parent="SlicerSubview/MarginContainer/VBoxContainer/GridContainer/GridContainer3"]
+layout_mode = 2
+size_flags_horizontal = 3
+max_value = 0.0
+allow_greater = true
+allow_lesser = true
+suffix = "px"
+select_all_on_focus = true
+
+[node name="W" type="Label" parent="SlicerSubview/MarginContainer/VBoxContainer/GridContainer/GridContainer3"]
+layout_mode = 2
+text = "W"
+horizontal_alignment = 1
+
+[node name="WEdit2" type="SpinBox" parent="SlicerSubview/MarginContainer/VBoxContainer/GridContainer/GridContainer3"]
+layout_mode = 2
+size_flags_horizontal = 3
+max_value = 0.0
+allow_greater = true
+allow_lesser = true
+suffix = "px"
+select_all_on_focus = true
+
+[node name="H" type="Label" parent="SlicerSubview/MarginContainer/VBoxContainer/GridContainer/GridContainer3"]
+layout_mode = 2
+text = "H"
+horizontal_alignment = 1
+
+[node name="HEdit2" type="SpinBox" parent="SlicerSubview/MarginContainer/VBoxContainer/GridContainer/GridContainer3"]
+layout_mode = 2
+size_flags_horizontal = 3
+max_value = 0.0
+allow_greater = true
+allow_lesser = true
+suffix = "px"
+select_all_on_focus = true
+
+[node name="FilterClipLabel" type="Label" parent="SlicerSubview/MarginContainer/VBoxContainer/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Filter Clip"
+
+[node name="FilterClipCheckBox" type="CheckBox" parent="SlicerSubview/MarginContainer/VBoxContainer/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 2.0
+text = "Enable"
+
+[node name="SliceMethodLabel" type="Label" parent="SlicerSubview/MarginContainer/VBoxContainer/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Method"
+
+[node name="SliceMethodOption" type="OptionButton" parent="SlicerSubview/MarginContainer/VBoxContainer/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 2.0
+
+[node name="ExcuteSliceButton" type="Button" parent="SlicerSubview/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 2.0
+text = "Slice"

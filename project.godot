@@ -1,0 +1,22 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
+config_version=5
+
+[application]
+
+config/name="GD-AtlasTexture-Creator"
+config/features=PackedStringArray("4.1", "C#", "Forward Plus")
+
+[dotnet]
+
+project/assembly_name="GD-AtlasTexture-Creator"
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/deyu_atlas_texture_creator_window/plugin.cfg")
