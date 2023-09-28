@@ -153,6 +153,7 @@ public partial class UnityAtlasTextureCreator
         {
             if(spinBox is null) return;
             spinBox.Rounded = rounded;
+            spinBox.Step = rounded ? 1 : 0.01f;
         }
     }
 

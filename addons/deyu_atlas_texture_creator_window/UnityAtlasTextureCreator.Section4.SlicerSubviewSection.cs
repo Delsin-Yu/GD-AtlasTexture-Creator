@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Godot;
 
 #endregion
@@ -123,9 +124,6 @@ public partial class UnityAtlasTextureCreator
                 else HideSlicerMenu();
             };
 
-        SlicerTypeSelection.AddItem("Automatic", (int)SliceMethod.Automatic);
-        SlicerTypeSelection.AddItem("Grid By Cell Size", (int)SliceMethod.GridByCellSize);
-        SlicerTypeSelection.AddItem("Grid By Cell Count", (int)SliceMethod.GridByCellCount);
 
         CurrentSlicerMode =
             settings
@@ -136,19 +134,25 @@ public partial class UnityAtlasTextureCreator
                 )
                .As<SliceMethod>();
 
+        CurrentPreservationMethod =
+            settings.GetProjectMetadata(
+                    "atlas_texture_editor",
+                    "preservation_mode",
+                    Variant.From(PreservationMethod.AvoidExisting)
+                )
+                .As<PreservationMethod>();
+
+        
+        SlicerTypeSelection.AddItem("Automatic", (int)SliceMethod.Automatic);
+        SlicerTypeSelection.AddItem("Grid By Cell Size", (int)SliceMethod.GridByCellSize);
+        SlicerTypeSelection.AddItem("Grid By Cell Count", (int)SliceMethod.GridByCellCount);
         SlicerTypeSelection.ItemSelected += p_mode => CurrentSlicerMode = (SliceMethod)p_mode;
         SlicerTypeSelection.Selected = (int)CurrentSlicerMode;
 
         PreservationMethodSelection.AddItem("Ignore Existing (Additive)", (int)PreservationMethod.IgnoreExisting);
         PreservationMethodSelection.AddItem("Avoid Existing (Smart)", (int)PreservationMethod.AvoidExisting);
-
-        CurrentPreservationMethod =
-            settings.GetProjectMetadata(
-                         "atlas_texture_editor",
-                         "preservation_mode",
-                         Variant.From(PreservationMethod.IgnoreExisting)
-                     )
-                    .As<PreservationMethod>();
+        PreservationMethodSelection.ItemSelected += mode => CurrentPreservationMethod = (PreservationMethod)mode;
+        PreservationMethodSelection.Selected = (int)CurrentPreservationMethod; 
 
         ExecuteSliceButton.Pressed += PerformSlice;
 
@@ -232,13 +236,10 @@ public partial class UnityAtlasTextureCreator
             {
                 var current = m_SlicePreview[i];
 
-                foreach (var editingAtlasTextureInfo in m_EditingAtlasTexture)
-                {
-                    if (!editingAtlasTextureInfo.Region.Intersects(current)) continue;
-                    m_SlicePreview.RemoveAt(i);
-                    i--;
-                    break;
-                }
+                if (!m_EditingAtlasTexture.Any(editingAtlasTextureInfo => editingAtlasTextureInfo.Region.Intersects(current))) continue;
+                
+                m_SlicePreview.RemoveAt(i);
+                i--;
             }
         }
 
