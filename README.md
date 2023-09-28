@@ -2,24 +2,24 @@
 
 ## English
 
-Supports `Godot 4.1 With .Net`
+Supports `Godot 4.1 With .Net`  
 Based on .Net, `GD AtlasTexture Creator` provides a handy editor window that resembles the `SpriteEditor` from UnityEditor for ease of `AtlasTexture` creation.
 
 ### Installation
 
 1. Download the zip file from [Release](https://github.com/Delsin-Yu/GD-AtlasTexture-Creator/releases/download/1.0.0/GD-AtlasTexture-Creator.1.0.0.zip).
 
-2. Decompress the file, and place the `addons` folder direct into the root of your project.
+2. Decompress the file, and place the `addons` folder directly into the root of your project.
 
-3. Navigate to `Project/Project Settings/Plugins` in Godot Editor, locate the `GD AtlasTexture Creator` from the `Installed Plugins` list, then check `Enable` under the `Status` colum.
+3. Navigate to `Project/Project Settings/Plugins` in Godot Editor, locate the `GD AtlasTexture Creator` from the `Installed Plugins` list, and then check `Enable` under the `Status` column.
 
-4. The dedicated inspector for `GD AtlasTexture Creator` will now launches located at the `Bottom Right Dock slot`
+4. The dedicated inspector for `GD AtlasTexture Creator` will now launch located at the `Bottom Right Dock slot`
 
 ### Usage
 
 #### Inspecting a Texture
 
-When double-clicking a resource with type `Texture2D` inside the `FileSystem Window`, the `GD AtlasTexture Creator` will show the preview of inspecting image.
+When double-clicking a resource with type `Texture2D` inside the `FileSystem Window`, the `GD AtlasTexture Creator` will show the preview of the inspecting image.
 
 ![image](./README.IMG/00.png)
 
@@ -29,7 +29,7 @@ When double-clicking a resource with type `Texture2D` inside the `FileSystem Win
 
 Control|Description|Selections
 :-|:-|:-
-`Snap Mode`|Controls the `snapping precision` when editing rect parameters, similar to the options inside the `AtlasTexture Region Editor Window`.|`Pixel Snap`: All Editing Metrics are clamped to integer persicion.<br>`None`: All Editing Metrics are clamped to two digit.
+`Snap Mode`|Controls the `snapping precision` when editing rect parameters, similar to the options inside the `AtlasTexture Region Editor Window`.|`Pixel Snap`: All Editing Metrics are clamped to integer precision.<br>`None`: All Editing Metrics are clamped to two digits.
 `AtlasTexture Slicer`|Toggle the visibility of the `AtlasTexture Slicer`, a tool for automating AtlasTexture creation.|`On`: Displays the `AtlasTexture Slicer`<br>`Off`: Hides the `AtlasTexture Slicer`
 `Scan AtlasTexture Button`|Scan the eligible `AtlasTextures` which uses the current inspecting `Texture2D` and displays the result inside the viewport.|`Scan AtlasTexture In Folder`: Scan the eligible AtlasTextures in the directory where the current inspecting `Texture2D` is located.<br>`Scan AtlasTexture In Project`: Scan the eligible AtlasTextures everywhere inside the project.
 
@@ -94,11 +94,11 @@ All changes made to the inspecting texture are `not` written into the filesystem
 Button|Definition
 :-|:-
 `Discard`|Discard the pending modification and restore the `Primary View Section` to its initial state.
-`Create / Update`|Creates all `temporarily created AtlasTextures`, and apply all changes to `existing AtlasTextures` into the project filesystem.
+`Create / Update`|Creates all `temporarily created AtlasTextures`, and applies all changes to `existing AtlasTextures` into the project filesystem.
 
 ## 中文
 
-此插件支持 `包含.Net模块的Godot 4.1`
+此插件支持 `包含.Net模块的Godot 4.1`  
 基于 .Net，`GD AtlasTexture Creator` 提供一个类似于Unity编辑器中`Sprite编辑器`的实用的编辑器，用于简化`AtlasTexture`的创建过程。
 
 ### 安装
