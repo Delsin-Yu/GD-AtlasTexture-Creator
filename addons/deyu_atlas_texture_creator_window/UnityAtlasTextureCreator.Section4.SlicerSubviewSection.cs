@@ -237,6 +237,7 @@ public partial class UnityAtlasTextureCreator
                     if (!editingAtlasTextureInfo.Region.Intersects(current)) continue;
                     m_SlicePreview.RemoveAt(i);
                     i--;
+                    break;
                 }
             }
         }

@@ -195,6 +195,9 @@ public partial class UnityAtlasTextureCreator
     {
         AtlasTextureNameInput.Text = string.Empty;
 
+        NewItemLabel.Hide();
+        DeleteItemButton.Hide();
+        
         AtlasTextureRegionXInput.SetValueNoSignal(0f);
         AtlasTextureRegionYInput.SetValueNoSignal(0f);
         AtlasTextureRegionWInput.SetValueNoSignal(0f);
