@@ -4,4 +4,10 @@
     <EnableDynamicLoading>true</EnableDynamicLoading>
     <RootNamespace>GDAtlasTextureCreator</RootNamespace>
   </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="Build\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Remove="Build\**" />
+  </ItemGroup>
 </Project>
