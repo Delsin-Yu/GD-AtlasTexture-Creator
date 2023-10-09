@@ -7,7 +7,7 @@ Based on .Net, `GD AtlasTexture Creator` provides a handy editor window that res
 
 ### Installation
 
-1. Download the zip file from [Release](https://github.com/Delsin-Yu/GD-AtlasTexture-Creator/releases/download/1.0.0/GD-AtlasTexture-Creator.1.0.0.zip).
+1. Download the zip file from [Release](https://github.com/Delsin-Yu/GD-AtlasTexture-Creator/releases/download/1.0.1/GD-AtlasTexture-Creator.1.0.1.zip).
 
 2. Decompress the file, and place the `addons` folder directly into the root of your project.
 
@@ -103,7 +103,7 @@ Button|Definition
 
 ### 安装
 
-1. 从[Release](https://github.com/Delsin-Yu/GD-AtlasTexture-Creator/releases/download/1.0.0/GD-AtlasTexture-Creator.1.0.0.zip)处下载压缩包。
+1. 从[Release](https://github.com/Delsin-Yu/GD-AtlasTexture-Creator/releases/download/1.0.1/GD-AtlasTexture-Creator.1.0.1.zip)处下载压缩包。
 
 2. 解压下载完成的压缩包，并且将其中的`addons`文件夹放置在项目工程文件夹的根目录。
 
