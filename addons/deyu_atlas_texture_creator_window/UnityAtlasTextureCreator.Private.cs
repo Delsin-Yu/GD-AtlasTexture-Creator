@@ -1,16 +1,12 @@
 ﻿#if TOOLS
 
-#region
-
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Godot;
 using Godot.Collections;
 
-#endregion
-
 namespace DEYU.GDUtilities.UnityAtlasTextureCreatorUtility;
-
 // This script contains the private fields and general api used by the UnityAtlasTextureCreator
 
 public partial class UnityAtlasTextureCreator
@@ -19,12 +15,22 @@ public partial class UnityAtlasTextureCreator
     private readonly Vector2[] m_HandlePositionBuffer = new Vector2[8];
     private readonly Array m_OneLengthArray = new(new Variant[1]);
     private string m_CurrentSourceTexturePath;
+    private Dragging m_DraggingHandle;
+    private Vector2 m_DraggingHandlePosition;
+    private Rect2 m_DraggingHandleStartRegion;
+    private Vector2 m_DraggingMousePositionOffset;
     private Vector2 m_DrawOffsets;
     private float m_DrawZoom;
     private EditorFileSystem m_EditorFileSystem;
+
+    private EditorPlugin m_EditorPlugin;
     private EditorUndoRedoManager m_EditorUndoRedoManager;
+
+    private EditingAtlasTextureInfo m_InspectingAtlasTextureInfo;
     private Texture2D m_InspectingTex;
     private string m_InspectingTexName;
+    private bool m_IsDragging;
+    private Rect2 m_ModifyingRegionBuffer;
     private CanvasTexture m_PreviewTex;
     private bool m_RequestCenter;
     private bool m_UpdatingScroll;
@@ -32,17 +38,32 @@ public partial class UnityAtlasTextureCreator
     // ReSharper disable once IdentifierTypo
     private ViewPannerCSharpImpl m_ViewPanner;
 
-    private EditingAtlasTextureInfo m_InspectingAtlasTextureInfo;
-    private bool m_IsDragging;
-    private Dragging m_DraggingHandle;
-    private Rect2 m_ModifyingRegionBuffer;
-    private Rect2 m_DraggingHandleStartRegion;
-    private Vector2 m_DraggingHandlePosition;
-    private Vector2 m_DraggingMousePositionOffset;
-    
+    [NotNull]
+    private ViewPannerCSharpImpl ViewPanner
+    {
+        get
+        {
+            if (m_ViewPanner is null)
+            {
+                var settings = m_EditorPlugin.GetEditorInterface().GetEditorSettings();
+
+                m_ViewPanner = new();
+                m_ViewPanner.SetCallbacks(Pan, ZoomOnPositionScroll);
+                m_ViewPanner.Setup(
+                    settings.Get("editors/panning/sub_editors_panning_scheme").As<ViewPannerCSharpImpl.ControlScheme>(),
+                    new(), // settings.GetShortcut("canvas_item_editor/pan_view"); // This api only exists in native side, Sad :(
+                    settings.Get("editors/panning/simple_panning").As<bool>()
+                );
+            }
+
+            return m_ViewPanner;
+        }
+    }
+
 
     /// <summary>
-    /// Update all UI controls based on the status of <see cref="m_InspectingTex"/>, <see cref="m_EditingAtlasTexture"/> and <see cref="m_InspectingAtlasTextureInfo"/>
+    ///     Update all UI controls based on the status of <see cref="m_InspectingTex" />, <see cref="m_EditingAtlasTexture" />
+    ///     and <see cref="m_InspectingAtlasTextureInfo" />
     /// </summary>
     private void UpdateControls()
     {
@@ -76,7 +97,7 @@ public partial class UnityAtlasTextureCreator
     }
 
     /// <summary>
-    /// Method called when the inspected texture is changed
+    ///     Method called when the inspected texture is changed
     /// </summary>
     private void OnTexChanged()
     {
@@ -86,7 +107,7 @@ public partial class UnityAtlasTextureCreator
     }
 
     /// <summary>
-    /// Method to update the inspection of the current texture
+    ///     Method to update the inspection of the current texture
     /// </summary>
     private void UpdateInspectingTexture()
     {

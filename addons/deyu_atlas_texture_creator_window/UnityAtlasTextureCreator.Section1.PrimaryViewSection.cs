@@ -1,18 +1,22 @@
 ﻿#if TOOLS
 
-#region
 
 using System;
 using Godot;
 
-#endregion
-
 namespace DEYU.GDUtilities.UnityAtlasTextureCreatorUtility;
-
 // This script contains the exports and api used by the Primary View Section of the UnityAtlasTextureCreator
 
 public partial class UnityAtlasTextureCreator
 {
+    [Export, ExportSubgroup("Primary View Section")] private Control EditDrawer { get; set; }
+
+    [Export] private Button ZoomInButton { get; set; }
+    [Export] private Button ZoomResetButton { get; set; }
+    [Export] private Button ZoomOutButton { get; set; }
+    [Export] private VScrollBar VScroll { get; set; }
+    [Export] private HScrollBar HScroll { get; set; }
+
     private enum Dragging
     {
         None = -1,
@@ -26,31 +30,18 @@ public partial class UnityAtlasTextureCreator
         Handle_BottomLeft = 6,
         Handle_Left = 7
     }
-    
-    [Export, ExportSubgroup("Primary View Section")] private Control EditDrawer { get; set; }
-    [Export] private Button ZoomInButton { get; set; }
-    [Export] private Button ZoomResetButton { get; set; }
-    [Export] private Button ZoomOutButton { get; set; }
-    [Export] private VScrollBar VScroll { get; set; }
-    [Export] private HScrollBar HScroll { get; set; }
 
     /// <summary>
-    /// Initialize the primary view section with editor settings
+    ///     Initialize the primary view section with editor settings
     /// </summary>
     /// <param name="settings"></param>
     private void InitializePrimaryViewSection(EditorSettings settings)
     {
         m_PreviewTex = new();
 
-        m_ViewPanner = new();
-        m_ViewPanner.SetCallbacks(
-            Pan,
-            (p_zoom_factor, p_origin, _) => ZoomOnPosition(m_DrawZoom * p_zoom_factor, p_origin)
-        );
-
         EditDrawer.Draw += DrawRegion;
         EditDrawer.GuiInput += InputRegion;
-        EditDrawer.FocusExited += m_ViewPanner.ReleasePanKey;
+        EditDrawer.FocusExited += ReleasePanKey;
 
         m_DrawZoom = 1.0f;
 
@@ -73,8 +64,15 @@ public partial class UnityAtlasTextureCreator
             "ZoomMore"
         );
 
-        VScroll.ValueChanged += OnScrollChanged;
-        HScroll.ValueChanged += OnScrollChanged;
+        RegRangeValueChanged(VScroll, OnScrollChanged);
+        RegRangeValueChanged(HScroll, OnScrollChanged);
+
+        EditDrawer.AddThemeStyleboxOverride("panel", Theme.GetStylebox("panel", "Tree"));
+
+
+        m_UpdatingScroll = false;
+
+        return;
 
         void OnScrollChanged(double _)
         {
@@ -85,26 +83,19 @@ public partial class UnityAtlasTextureCreator
             EditDrawer.QueueRedraw();
         }
 
-        EditDrawer.AddThemeStyleboxOverride("panel", Theme.GetStylebox("panel", "Tree"));
-        m_ViewPanner.Setup(
-            settings.Get("editors/panning/sub_editors_panning_scheme").As<ViewPannerCSharpImpl.ControlScheme>(),
-            new(), // settings.GetShortcut("canvas_item_editor/pan_view"); // This api only exists in native side, Sad :(
-            settings.Get("editors/panning/simple_panning").As<bool>()
-        );
-
-        m_UpdatingScroll = false;
-
         void BindZoomButtons(Button button, string text, Action onPress, string editorIconName)
         {
             button.Flat = true;
             button.TooltipText = Tr(text);
             button.Icon = Theme.GetIcon(editorIconName, "EditorIcons");
-            button.Pressed += onPress;
+            RegButtonPressed(button, onPress);
         }
     }
 
+    private void ReleasePanKey() => ViewPanner.ReleasePanKey();
+
     /// <summary>
-    /// Calculate eight handle positions for a given rectangle frame
+    ///     Calculate eight handle positions for a given rectangle frame
     /// </summary>
     /// <param name="rect"></param>
     /// <param name="eightHandlePositions"></param>
@@ -170,7 +161,12 @@ public partial class UnityAtlasTextureCreator
     }
 
     /// <summary>
-    /// Zoom the view at a specific position
+    ///     Zoom the view at a specific position (for view panner scroll)
+    /// </summary>
+    private void ZoomOnPositionScroll(float p_zoom, Vector2 p_position) => ZoomOnPosition(m_DrawZoom * p_zoom, p_position);
+
+    /// <summary>
+    ///     Zoom the view at a specific position
     /// </summary>
     private void ZoomOnPosition(float p_zoom, Vector2 p_position)
     {

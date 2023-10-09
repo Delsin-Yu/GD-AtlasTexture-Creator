@@ -1,15 +1,12 @@
 #if TOOLS
 
-#region
 
 using Godot;
-
-#endregion
 
 namespace DEYU.GDUtilities.UnityAtlasTextureCreatorUtility;
 
 /// <summary>
-/// Bootstrap script for <see cref="UnityAtlasTextureCreator"/>
+///     Bootstrap script for <see cref="UnityAtlasTextureCreator" />
 /// </summary>
 [Tool]
 public partial class UnityAtlasTextureCreatorBoot : EditorPlugin
@@ -17,7 +14,7 @@ public partial class UnityAtlasTextureCreatorBoot : EditorPlugin
     private UnityAtlasTextureCreator m_EditorWindow;
 
     /// <summary>
-    /// This window is capable for editing Texture2Ds, except AtlasTexture itself
+    ///     This window is capable for editing Texture2Ds, except AtlasTexture itself
     /// </summary>
     public override bool _Handles(GodotObject godotObject)
     {
@@ -28,7 +25,7 @@ public partial class UnityAtlasTextureCreatorBoot : EditorPlugin
     }
 
     /// <summary>
-    /// This triggers when user double click a supported assets in scene window.
+    ///     This triggers when user double click a supported assets in scene window.
     /// </summary>
     public override void _Edit(GodotObject godotObject)
     {
@@ -37,7 +34,7 @@ public partial class UnityAtlasTextureCreatorBoot : EditorPlugin
     }
 
     /// <summary>
-    /// Creates the actual window and add it to editor dock.
+    ///     Creates the actual window and add it to editor dock.
     /// </summary>
     public override void _EnterTree()
     {
@@ -50,7 +47,7 @@ public partial class UnityAtlasTextureCreatorBoot : EditorPlugin
     }
 
     /// <summary>
-    /// Delete the corresponding window from the editor dock
+    ///     Delete the corresponding window from the editor dock
     /// </summary>
     public override void _ExitTree()
     {

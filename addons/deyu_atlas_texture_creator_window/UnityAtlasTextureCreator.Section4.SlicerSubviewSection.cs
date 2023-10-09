@@ -1,25 +1,28 @@
 ﻿#if TOOLS
 
-#region
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
-#endregion
-
 namespace DEYU.GDUtilities.UnityAtlasTextureCreatorUtility;
-
 // This script contains the exports and api used by the Save & Discard Section of the UnityAtlasTextureCreator
 
 public partial class UnityAtlasTextureCreator
 {
+    private readonly List<Rect2> m_SlicePreview = new();
+
+
+    private SliceMethod m_CurrentSlicerMode = SliceMethod.Automatic;
+
     [Export, ExportSubgroup("Slicer Subview Section")] private Control SlicerMenu { get; set; }
+
     [Export] private OptionButton SlicerTypeSelection { get; set; }
     [Export] private OptionButton PreservationMethodSelection { get; set; }
     [Export] private Button ExecuteSliceButton { get; set; }
+
     [Export, ExportSubgroup("Slicer Subview Section/Defaults")] private SpinBox NewAtlasTextureMarginXInput { get; set; }
+
     [Export] private SpinBox NewAtlasTextureMarginYInput { get; set; }
     [Export] private SpinBox NewAtlasTextureMarginWInput { get; set; }
     [Export] private SpinBox NewAtlasTextureMarginHInput { get; set; }
@@ -46,13 +49,6 @@ public partial class UnityAtlasTextureCreator
     [Export] private SpinBox CellCount_PaddingX { get; set; }
     [Export] private SpinBox CellCount_PaddingY { get; set; }
     [Export] private CheckBox CellCount_KeepEmptyRects { get; set; }
-
-
-    private SliceMethod m_CurrentSlicerMode = SliceMethod.Automatic;
-
-    private enum SliceMethod { Automatic = 0, GridByCellSize = 1, GridByCellCount = 2 }
-
-    private enum PreservationMethod { IgnoreExisting = 0, AvoidExisting = 1 }
 
     private SliceMethod CurrentSlicerMode
     {
@@ -99,7 +95,7 @@ public partial class UnityAtlasTextureCreator
 
                     break;
                 default:
-                    throw new ArgumentOutOfRangeException();
+                    throw new ArgumentOutOfRangeException(nameof(value));
             }
 
             PreviewCurrentSlice();
@@ -108,21 +104,25 @@ public partial class UnityAtlasTextureCreator
 
     private PreservationMethod CurrentPreservationMethod { get; set; }
 
-    private readonly List<Rect2> m_SlicePreview = new();
+    private enum SliceMethod { Automatic = 0, GridByCellSize = 1, GridByCellCount = 2 }
+
+    private enum PreservationMethod { IgnoreExisting = 0, AvoidExisting = 1 }
 
     /// <summary>
-    /// Initialize the slicer module with the given settings
+    ///     Initialize the slicer module with the given settings
     /// </summary>
     private void InitializeSlicer(EditorSettings settings)
     {
-        AtlasTextureSlicerButton.Toggled +=
+        RegButtonToggled(
+            AtlasTextureSlicerButton,
             isOn =>
             {
                 if (m_InspectingTex is null) return;
 
                 if (isOn) ShowSlicerMenu();
                 else HideSlicerMenu();
-            };
+            }
+        );
 
 
         CurrentSlicerMode =
@@ -136,46 +136,49 @@ public partial class UnityAtlasTextureCreator
 
         CurrentPreservationMethod =
             settings.GetProjectMetadata(
-                    "atlas_texture_editor",
-                    "preservation_mode",
-                    Variant.From(PreservationMethod.AvoidExisting)
-                )
-                .As<PreservationMethod>();
+                         "atlas_texture_editor",
+                         "preservation_mode",
+                         Variant.From(PreservationMethod.AvoidExisting)
+                     )
+                    .As<PreservationMethod>();
 
-        
+
         SlicerTypeSelection.AddItem("Automatic", (int)SliceMethod.Automatic);
         SlicerTypeSelection.AddItem("Grid By Cell Size", (int)SliceMethod.GridByCellSize);
         SlicerTypeSelection.AddItem("Grid By Cell Count", (int)SliceMethod.GridByCellCount);
-        SlicerTypeSelection.ItemSelected += p_mode => CurrentSlicerMode = (SliceMethod)p_mode;
+        RegOptionButtonItemSelected(SlicerTypeSelection, p_mode => CurrentSlicerMode = (SliceMethod)p_mode);
         SlicerTypeSelection.Selected = (int)CurrentSlicerMode;
 
         PreservationMethodSelection.AddItem("Ignore Existing (Additive)", (int)PreservationMethod.IgnoreExisting);
         PreservationMethodSelection.AddItem("Avoid Existing (Smart)", (int)PreservationMethod.AvoidExisting);
-        PreservationMethodSelection.ItemSelected += mode => CurrentPreservationMethod = (PreservationMethod)mode;
-        PreservationMethodSelection.Selected = (int)CurrentPreservationMethod; 
+        RegOptionButtonItemSelected(PreservationMethodSelection, mode => CurrentPreservationMethod = (PreservationMethod)mode);
+        PreservationMethodSelection.Selected = (int)CurrentPreservationMethod;
 
         ExecuteSliceButton.Pressed += PerformSlice;
 
-        CellSize_PixelSizeX.ValueChanged += _ => CallDeferred(MethodName.PreviewCurrentSlice);
-        CellSize_PixelSizeY.ValueChanged += _ => CallDeferred(MethodName.PreviewCurrentSlice);
-        CellSize_OffsetX.ValueChanged += _ => CallDeferred(MethodName.PreviewCurrentSlice);
-        CellSize_OffsetY.ValueChanged += _ => CallDeferred(MethodName.PreviewCurrentSlice);
-        CellSize_PaddingX.ValueChanged += _ => CallDeferred(MethodName.PreviewCurrentSlice);
-        CellSize_PaddingY.ValueChanged += _ => CallDeferred(MethodName.PreviewCurrentSlice);
-        CellSize_KeepEmptyRects.Toggled += _ => CallDeferred(MethodName.PreviewCurrentSlice);
-        CellCount_ColumnRowX.ValueChanged += _ => CallDeferred(MethodName.PreviewCurrentSlice);
-        CellCount_ColumnRowY.ValueChanged += _ => CallDeferred(MethodName.PreviewCurrentSlice);
-        CellCount_OffsetX.ValueChanged += _ => CallDeferred(MethodName.PreviewCurrentSlice);
-        CellCount_OffsetY.ValueChanged += _ => CallDeferred(MethodName.PreviewCurrentSlice);
-        CellCount_PaddingX.ValueChanged += _ => CallDeferred(MethodName.PreviewCurrentSlice);
-        CellCount_PaddingY.ValueChanged += _ => CallDeferred(MethodName.PreviewCurrentSlice);
-        CellCount_KeepEmptyRects.Toggled += _ => CallDeferred(MethodName.PreviewCurrentSlice);
+        RegRangeValueChanged(CellSize_PixelSizeX, PreviewCurrentSliceDeferred);
+        RegRangeValueChanged(CellSize_PixelSizeY, PreviewCurrentSliceDeferred);
+        RegRangeValueChanged(CellSize_OffsetX, PreviewCurrentSliceDeferred);
+        RegRangeValueChanged(CellSize_OffsetY, PreviewCurrentSliceDeferred);
+        RegRangeValueChanged(CellSize_PaddingX, PreviewCurrentSliceDeferred);
+        RegRangeValueChanged(CellSize_PaddingY, PreviewCurrentSliceDeferred);
+        RegButtonToggled(CellSize_KeepEmptyRects, PreviewCurrentSliceDeferred);
+        RegRangeValueChanged(CellCount_ColumnRowX, PreviewCurrentSliceDeferred);
+        RegRangeValueChanged(CellCount_ColumnRowY, PreviewCurrentSliceDeferred);
+        RegRangeValueChanged(CellCount_OffsetX, PreviewCurrentSliceDeferred);
+        RegRangeValueChanged(CellCount_OffsetY, PreviewCurrentSliceDeferred);
+        RegRangeValueChanged(CellCount_PaddingX, PreviewCurrentSliceDeferred);
+        RegRangeValueChanged(CellCount_PaddingY, PreviewCurrentSliceDeferred);
+        RegButtonToggled(CellCount_KeepEmptyRects, PreviewCurrentSliceDeferred);
 
         SlicerMenu.Hide();
     }
 
+    private void PreviewCurrentSliceDeferred(double newValue) => CallDeferred(MethodName.PreviewCurrentSlice);
+    private void PreviewCurrentSliceDeferred(bool newValue) => CallDeferred(MethodName.PreviewCurrentSlice);
+
     /// <summary>
-    /// Show the slicer menu and trigger a preview of the current slice
+    ///     Show the slicer menu and trigger a preview of the current slice
     /// </summary>
     private void ShowSlicerMenu()
     {
@@ -186,7 +189,7 @@ public partial class UnityAtlasTextureCreator
     }
 
     /// <summary>
-    /// Hide the slicer menu and clear the slice preview
+    ///     Hide the slicer menu and clear the slice preview
     /// </summary>
     private void HideSlicerMenu()
     {
@@ -196,11 +199,13 @@ public partial class UnityAtlasTextureCreator
     }
 
     /// <summary>
-    /// Perform the selected slicing mode (<see cref="CurrentSlicerMode"/>), and creates the corresponding <see cref="EditingAtlasTextureInfo"/> into <see cref="m_EditingAtlasTexture"/>
+    ///     Perform the selected slicing mode (<see cref="CurrentSlicerMode" />), and creates the corresponding
+    ///     <see cref="EditingAtlasTextureInfo" /> into <see cref="m_EditingAtlasTexture" />
     /// </summary>
     private void PerformSlice()
     {
         m_SlicePreview.Clear();
+
         switch (CurrentSlicerMode)
         {
             case SliceMethod.Automatic:
@@ -231,17 +236,15 @@ public partial class UnityAtlasTextureCreator
         }
 
         if (CurrentPreservationMethod is PreservationMethod.AvoidExisting)
-        {
             for (var i = 0; i < m_SlicePreview.Count; i++)
             {
                 var current = m_SlicePreview[i];
 
                 if (!m_EditingAtlasTexture.Any(editingAtlasTextureInfo => editingAtlasTextureInfo.Region.Intersects(current))) continue;
-                
+
                 m_SlicePreview.RemoveAt(i);
                 i--;
             }
-        }
 
         var filterClip = FilterClip.ButtonPressed;
 
@@ -251,7 +254,7 @@ public partial class UnityAtlasTextureCreator
             (float)NewAtlasTextureMarginWInput.Value,
             (float)NewAtlasTextureMarginHInput.Value
         );
-        
+
         foreach (var slice in m_SlicePreview)
         {
             CreateSlice(slice, margin, filterClip);
@@ -262,7 +265,7 @@ public partial class UnityAtlasTextureCreator
     }
 
     /// <summary>
-    /// Creates a preview for current selecting slicing mode (<see cref="CurrentSlicerMode"/>)
+    ///     Creates a preview for current selecting slicing mode (<see cref="CurrentSlicerMode" />)
     /// </summary>
     /// <exception cref="ArgumentOutOfRangeException"></exception>
     private void PreviewCurrentSlice()
@@ -300,7 +303,7 @@ public partial class UnityAtlasTextureCreator
     }
 
     /// <summary>
-    /// Core method for Automatic Slice Calculation
+    ///     Core method for Automatic Slice Calculation
     /// </summary>
     private static void CalculateAutomaticSlice(Texture2D texture, IList<Rect2> sliceData)
     {
@@ -339,10 +342,7 @@ public partial class UnityAtlasTextureCreator
 
                             if (!f.IsValid || !e.IsValid) break;
 
-                            if (f.Value == e.Value)
-                            {
-                                continue;
-                            }
+                            if (f.Value == e.Value) continue;
 
                             if (!e.Value.Grow(1).Intersects(f.Value)) continue;
                             e.Value = e.Value.Expand(f.Value.Position);
@@ -354,12 +354,9 @@ public partial class UnityAtlasTextureCreator
                                 var nextF = f.GetNext();
                                 if (nextF.IsValid) sliceData.Remove(nextF.Value);
                             }
-                            else
-                            {
-                                queue_erase = true;
-                                // Can't delete the first rect in the list.
-                            }
+                            else queue_erase = true;
 
+                            // Can't delete the first rect in the list.
                             merged = true;
                         }
                     }
@@ -376,7 +373,7 @@ public partial class UnityAtlasTextureCreator
     }
 
     /// <summary>
-    /// Core method for Slice Calculation based on Cell Size
+    ///     Core method for Slice Calculation based on Cell Size
     /// </summary>
     private static void CalculateByCellSizeSlice(Texture2D texture, IList<Rect2> sliceData, Vector2 pixelSize, Vector2 offset, Vector2 margin, bool keepEmptyRect)
     {
@@ -415,7 +412,7 @@ public partial class UnityAtlasTextureCreator
     }
 
     /// <summary>
-    /// Core method for Slice Calculation based on Cell Count
+    ///     Core method for Slice Calculation based on Cell Count
     /// </summary>
     private static void CalculateByCellCountSlice(Texture2D texture, IList<Rect2> sliceData, Vector2I columnRow, Vector2 offset, Vector2 margin, bool keepEmptyRect)
     {

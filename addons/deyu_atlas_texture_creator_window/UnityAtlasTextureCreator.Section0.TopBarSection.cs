@@ -1,24 +1,15 @@
 ﻿#if TOOLS
 
-#region
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
-#endregion
-
 namespace DEYU.GDUtilities.UnityAtlasTextureCreatorUtility;
-
 // This script contains the exports and api used by the Top Bar Section of the UnityAtlasTextureCreator
 
 public partial class UnityAtlasTextureCreator
 {
-    private enum SnapMode { NoneSnap, PixelSnap }
-
-    private enum ScanMode { SourceFolderOnly, WholeProject }
-    
     private SnapMode m_CurrentSnapMode = SnapMode.NoneSnap;
 
     [Export, ExportSubgroup("Top Bar Section")] private OptionButton SnapModeButton { get; set; }
@@ -37,8 +28,12 @@ public partial class UnityAtlasTextureCreator
         }
     }
 
+    private enum SnapMode { NoneSnap, PixelSnap }
+
+    private enum ScanMode { SourceFolderOnly, WholeProject }
+
     /// <summary>
-    /// Initialize the top bar section with editor settings
+    ///     Initialize the top bar section with editor settings
     /// </summary>
     /// <param name="settings"></param>
     private void InitializeTopBarSection(EditorSettings settings)
@@ -52,19 +47,15 @@ public partial class UnityAtlasTextureCreator
                 )
                .As<SnapMode>();
 
-        SnapModeButton.ItemSelected += p_mode => CurrentSnapMode = (SnapMode)p_mode;
-        SnapModeButton.Selected = (int)CurrentSnapMode;
+        RegOptionButtonItemSelected(SnapModeButton, pMode => CurrentSnapMode = (SnapMode)pMode);
+        RegButtonPressed(ScanAtlasInFolderButton, () => ScanAtlasTexture(ScanMode.SourceFolderOnly, m_EditingAtlasTexture));
+        RegButtonPressed(ScanAtlasInProjectButton, () => ScanAtlasTexture(ScanMode.WholeProject, m_EditingAtlasTexture));
 
-        ScanAtlasInFolderButton.Pressed +=
-            () =>
-                ScanAtlasTexture(ScanMode.SourceFolderOnly, m_EditingAtlasTexture);
-        ScanAtlasInProjectButton.Pressed +=
-            () =>
-                ScanAtlasTexture(ScanMode.WholeProject, m_EditingAtlasTexture);
+        SnapModeButton.Selected = (int)CurrentSnapMode;
     }
 
     /// <summary>
-    /// Scan and populate atlas textures based on the selected scan mode
+    ///     Scan and populate atlas textures based on the selected scan mode
     /// </summary>
     private void ScanAtlasTexture(ScanMode scanMode, List<EditingAtlasTextureInfo> editingAtlasTextureInfoCache)
     {
@@ -76,7 +67,7 @@ public partial class UnityAtlasTextureCreator
         {
             case ScanMode.SourceFolderOnly:
                 var sourcePath = m_InspectingTex.ResourcePath;
-                var dirPath = GDPath.GetDirectoryName(sourcePath);
+                var dirPath = GdPath.GetDirectoryName(sourcePath);
                 EditorFileSystemDirectory directory;
                 directory = m_EditorFileSystem.GetFilesystemPath(dirPath);
                 FindMatchingSourceTextureInDirectory(m_InspectingTex, collection, directory);
@@ -95,7 +86,7 @@ public partial class UnityAtlasTextureCreator
     }
 
     /// <summary>
-    /// Recursive method to find matching source textures in a directory and its subdirectories
+    ///     Recursive method to find matching source textures in a directory and its subdirectories
     /// </summary>
     private static void FindMatchingSourceTextureInDirectoryRecursive(Texture2D sourceTexture, ICollection<(AtlasTexture, string)> matchedAtlasTexture, EditorFileSystemDirectory directory)
     {
@@ -110,7 +101,8 @@ public partial class UnityAtlasTextureCreator
     }
 
     /// <summary>
-    /// Scans and acquire the <see cref="AtlasTexture"/> with the <see cref="AtlasTexture.Atlas"/> matching the provided <paramref name="sourceTexture"/> from the providing <paramref name="directory"/> 
+    ///     Scans and acquire the <see cref="AtlasTexture" /> with the <see cref="AtlasTexture.Atlas" /> matching the provided
+    ///     <paramref name="sourceTexture" /> from the providing <paramref name="directory" />
     /// </summary>
     private static void FindMatchingSourceTextureInDirectory(Texture2D sourceTexture, ICollection<(AtlasTexture, string)> matchedAtlasTexture, EditorFileSystemDirectory directory)
     {

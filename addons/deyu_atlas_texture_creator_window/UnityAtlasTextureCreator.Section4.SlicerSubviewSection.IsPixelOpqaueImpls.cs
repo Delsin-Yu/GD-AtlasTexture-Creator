@@ -1,7 +1,6 @@
 using Godot;
 
 namespace DEYU.GDUtilities.UnityAtlasTextureCreatorUtility;
-
 // This script contains the C# implementation of IsPixelOpaqueImpl for ImageTexture, PortableCompressedTexture2D, and CompressedTexture2D which the original methods are only available in Native Side
 
 public partial class UnityAtlasTextureCreator
@@ -11,20 +10,18 @@ public partial class UnityAtlasTextureCreator
     private static Rid s_ImageTextureRid;
 
     /// <summary>
-    /// Extract the Image info from the given <paramref name="texture2D"/>, Cached.
+    ///     Extract the Image info from the given <paramref name="texture2D" />, Cached.
     /// </summary>
     private static Image GetImageFromTexture2D(Texture2D texture2D)
     {
-        if (!s_ImageTextureRid.IsValid)
-        {
-            s_ImageTextureRid = RenderingServer.Texture2DCreate(texture2D.GetImage());
-        }
+        if (!s_ImageTextureRid.IsValid) s_ImageTextureRid = RenderingServer.Texture2DCreate(texture2D.GetImage());
 
         return RenderingServer.Texture2DGet(s_ImageTextureRid);
     }
 
     /// <summary>
-    /// The C# implementation of IsPixelOpaqueImpl for ImageTexture, PortableCompressedTexture2D, and CompressedTexture2D which the original methods are only available in Native Side
+    ///     The C# implementation of IsPixelOpaqueImpl for ImageTexture, PortableCompressedTexture2D, and CompressedTexture2D
+    ///     which the original methods are only available in Native Side
     /// </summary>
     private static bool IsPixelOpaqueImpl(Texture2D texture2D, int x, int y)
     {
@@ -60,10 +57,7 @@ public partial class UnityAtlasTextureCreator
 
                 if (s_ImageAlphaCache is null) return true;
                 var (aw, ah) = s_ImageAlphaCache.GetSize();
-                if (aw == 0 || ah == 0)
-                {
-                    return true;
-                }
+                if (aw == 0 || ah == 0) return true;
 
                 var imageSize = texture2D.GetSize();
 

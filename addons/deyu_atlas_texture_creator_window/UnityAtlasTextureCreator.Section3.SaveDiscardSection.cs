@@ -1,27 +1,25 @@
 ﻿#if TOOLS
 
-#region
 
 using System.Collections.Generic;
 using Godot;
 
-#endregion
-
 namespace DEYU.GDUtilities.UnityAtlasTextureCreatorUtility;
-
 // This script contains the exports and api used by the Save & Discard Section of the UnityAtlasTextureCreator
 
 public partial class UnityAtlasTextureCreator
 {
     [Export, ExportSubgroup("Save & Discard Section")] private Button DiscardButton { get; set; }
+
     [Export] private Button SaveAndUpdateButton { get; set; }
 
     /// <summary>
-    /// Initialize the Save & Discard button callbacks
+    ///     Initialize the Save & Discard button callbacks
     /// </summary>
     private void InitializeSaveDiscardSection()
     {
-        DiscardButton.Pressed +=
+        RegButtonPressed(
+            DiscardButton,
             () =>
             {
                 var deletingAtlasTexture = new List<EditingAtlasTextureInfo>();
@@ -42,8 +40,10 @@ public partial class UnityAtlasTextureCreator
                 UpdateControls();
                 if (m_InspectingAtlasTextureInfo is not null) UpdateInspectingMetrics(m_InspectingAtlasTextureInfo);
                 else ResetInspectingMetrics();
-            };
-        SaveAndUpdateButton.Pressed +=
+            }
+        );
+        RegButtonPressed(
+            SaveAndUpdateButton,
             () =>
             {
                 foreach (var editingAtlasTextureInfo in m_EditingAtlasTexture)
@@ -58,7 +58,8 @@ public partial class UnityAtlasTextureCreator
                 UpdateControls();
                 if (m_InspectingAtlasTextureInfo is not null) UpdateInspectingMetrics(m_InspectingAtlasTextureInfo);
                 else ResetInspectingMetrics();
-            };
+            }
+        );
     }
 }
 

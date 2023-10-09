@@ -1,26 +1,22 @@
 ﻿#if TOOLS
 
-#region
 
 using System.Runtime.InteropServices;
 using Godot;
 
-#endregion
-
 namespace DEYU.GDUtilities.UnityAtlasTextureCreatorUtility;
-
 // This script contains the api used by the Input Handling submodule from the Primary View Section of the UnityAtlasTextureCreator
 
 public partial class UnityAtlasTextureCreator
 {
     /// <summary>
-    /// Core method for handling input events related to the region editor
+    ///     Core method for handling input events related to the region editor
     /// </summary>
     private void InputRegion(InputEvent p_input)
     {
         if (m_InspectingTex is null) return;
 
-        if (m_ViewPanner.ProcessGuiInput(p_input, new())) return;
+        if (ViewPanner.ProcessGuiInput(p_input, new())) return;
 
         switch (p_input)
         {
@@ -34,14 +30,14 @@ public partial class UnityAtlasTextureCreator
                 ZoomOnPosition(m_DrawZoom * magnify_gesture.Factor, magnify_gesture.Position);
                 break;
             case InputEventPanGesture pan_gesture:
-                HScroll.Value = HScroll.Value + HScroll.Page * pan_gesture.Delta.X / 8;
-                VScroll.Value = VScroll.Value + VScroll.Page * pan_gesture.Delta.Y / 8;
+                HScroll.Value += HScroll.Page * pan_gesture.Delta.X / 8;
+                VScroll.Value += VScroll.Page * pan_gesture.Delta.Y / 8;
                 break;
         }
     }
 
     /// <summary>
-    /// SubMethod for update information during mouse dragging
+    ///     SubMethod for update information during mouse dragging
     /// </summary>
     private void OnMouseDragUpdate(in Vector2 localMousePosition, out Dragging draggingHandleIndex, out Vector2 draggingHandlePosition, out EditingAtlasTextureInfo inspectingAtlasTextureInfo)
     {
@@ -83,7 +79,7 @@ public partial class UnityAtlasTextureCreator
     }
 
     /// <summary>
-    /// SubMethod for update information for mouse button events
+    ///     SubMethod for update information for mouse button events
     /// </summary>
     private void ProcessMouseButton(InputEventMouseButton mouseButton)
     {
@@ -131,7 +127,7 @@ public partial class UnityAtlasTextureCreator
     }
 
     /// <summary>
-    /// SubMethod for update information for mouse motion events
+    ///     SubMethod for update information for mouse motion events
     /// </summary>
     private void ProcessMouseMotion(InputEventMouseMotion mouseMotion)
     {
@@ -155,7 +151,7 @@ public partial class UnityAtlasTextureCreator
     }
 
     /// <summary>
-    /// Core method for calculating the new region based on the dragging type and offset
+    ///     Core method for calculating the new region based on the dragging type and offset
     /// </summary>
     private static Rect2 CalculateOffset(Rect2 region, Dragging dragging, Vector2 diff) =>
         dragging switch
@@ -172,7 +168,7 @@ public partial class UnityAtlasTextureCreator
         };
 
     /// <summary>
-    /// Pan the view
+    ///     Pan the view
     /// </summary>
     private void Pan(Vector2 p_scroll_vec)
     {
@@ -182,9 +178,9 @@ public partial class UnityAtlasTextureCreator
     }
 
     /// <summary>
-    /// Creates the AtlasTexture Slice base on the given info
+    ///     Creates the AtlasTexture Slice base on the given info
     /// </summary>
-    private void CreateSlice(in Rect2 region, in Rect2 margin ,bool filterClip)
+    private void CreateSlice(in Rect2 region, in Rect2 margin, bool filterClip)
     {
         m_InspectingAtlasTextureInfo =
             EditingAtlasTextureInfo.CreateEmpty(
@@ -199,7 +195,8 @@ public partial class UnityAtlasTextureCreator
     }
 
     /// <summary>
-    /// Called when releasing mouse drag, this function applies the info of current dragging rect (<see cref="m_ModifyingRegionBuffer"/>>) into the <see cref="m_InspectingAtlasTextureInfo"/>
+    ///     Called when releasing mouse drag, this function applies the info of current dragging rect (
+    ///     <see cref="m_ModifyingRegionBuffer" />>) into the <see cref="m_InspectingAtlasTextureInfo" />
     /// </summary>
     private void FlushRegionModifyingBuffer()
     {

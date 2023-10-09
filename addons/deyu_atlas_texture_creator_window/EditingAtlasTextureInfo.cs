@@ -1,13 +1,9 @@
 ﻿#if TOOLS
 
-#region
-
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Godot;
-
-#endregion
 
 namespace DEYU.GDUtilities.UnityAtlasTextureCreatorUtility;
 
@@ -34,6 +30,21 @@ public class EditingAtlasTextureInfo
     public bool FilterClip { get; private set; }
 
     public bool Modified { get; private set; }
+
+    private static class GdPath
+    {
+        public static string Combine(string pathA, string pathB)
+        {
+            var newPath = Path.Combine(pathA, pathB);
+            return ToGdPath(newPath);
+        }
+
+        public static string ToGdPath(string path)
+        {
+            var unixStyledPath = path.Replace("\\", "/");
+            return unixStyledPath.Insert(unixStyledPath.IndexOf('/'), "/");
+        }
+    }
 
     public static EditingAtlasTextureInfo Create((AtlasTexture atlasTexture, string resourcePath) data)
     {
@@ -127,7 +138,7 @@ public class EditingAtlasTextureInfo
                 {
                     Atlas = sourceTexture
                 };
-            m_ResourcePath = GDPath.Combine(sourceTextureDirectory, $"{Name}.tres");
+            m_ResourcePath = GdPath.Combine(sourceTextureDirectory, $"{Name}.tres");
         }
 
         m_BackingAtlasTexture.Region = Region;
@@ -149,22 +160,6 @@ public class EditingAtlasTextureInfo
         Margin = m_BackingAtlasTexture.Margin;
         FilterClip = m_BackingAtlasTexture.FilterClip;
         Modified = false;
-    }
-    
-    private static class GDPath
-    {
-        
-        public static string Combine(string pathA, string pathB)
-        {
-            var newPath = Path.Combine(pathA, pathB);
-            return ToGDPath(newPath);
-        }
-        
-        public static string ToGDPath(string path)
-        {
-            var unixStyledPath = path.Replace("\\", "/");
-            return unixStyledPath.Insert(unixStyledPath.IndexOf('/'), "/");
-        }
     }
 }
 #endif

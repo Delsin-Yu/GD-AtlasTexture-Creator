@@ -1,14 +1,10 @@
-#region
-
 using System;
 using Godot;
-
-#endregion
 
 namespace DEYU.GDUtilities.UnityAtlasTextureCreatorUtility;
 
 /// <summary>
-/// The C# Implementation of the original ViewPanner exists in godot source code (view_panner.cpp)
+///     The C# Implementation of the original ViewPanner exists in godot source code (view_panner.cpp)
 /// </summary>
 public class ViewPannerCSharpImpl
 {
@@ -18,11 +14,11 @@ public class ViewPannerCSharpImpl
 
     private bool m_IsDragging;
 
-    private Action<Vector2, InputEvent> m_PanCallback;
+    private Action<Vector2> m_PanCallback;
     private bool m_PanKeyPressed;
 
     private float m_ScrollZoomFactor = 1.1f;
-    private Action<float, Vector2, InputEvent> m_ZoomCallback;
+    private Action<float, Vector2> m_ZoomCallback;
 
     public bool IsPanning => m_IsDragging || m_PanKeyPressed;
     public bool ForceDrag { get; set; }
@@ -34,9 +30,9 @@ public class ViewPannerCSharpImpl
     public PanAxis CurrentPanAxis { get; set; } = PanAxis.Both;
 
 
-    public void SetCallbacks(Action<Vector2> panCallback, Action<float, Vector2, InputEvent> zoomCallback)
+    public void SetCallbacks(Action<Vector2> panCallback, Action<float, Vector2> zoomCallback)
     {
-        m_PanCallback = (arg, _) => panCallback(arg);
+        m_PanCallback = panCallback;
         m_ZoomCallback = zoomCallback;
     }
 
@@ -72,7 +68,7 @@ public class ViewPannerCSharpImpl
             case InputEventMouseButton mb:
                 Vector2 scroll_vec =
                     new(
-                        Convert.ToInt32(mb.ButtonIndex == MouseButton.WheelLeft) - Convert.ToInt32(mb.ButtonIndex == MouseButton.WheelLeft),
+                        Convert.ToInt32(mb.ButtonIndex == MouseButton.WheelRight) - Convert.ToInt32(mb.ButtonIndex == MouseButton.WheelLeft),
                         Convert.ToInt32(mb.ButtonIndex == MouseButton.WheelDown) - Convert.ToInt32(mb.ButtonIndex == MouseButton.WheelUp)
                     );
 
@@ -86,7 +82,7 @@ public class ViewPannerCSharpImpl
                         {
                             // Compute the zoom factor.
                             var zoom = scroll_vec.X + scroll_vec.Y > 0 ? 1.0f / m_ScrollZoomFactor : m_ScrollZoomFactor;
-                            m_ZoomCallback(zoom, mb.Position, inputEvent);
+                            m_ZoomCallback(zoom, mb.Position);
                             return true;
                         }
 
@@ -106,7 +102,7 @@ public class ViewPannerCSharpImpl
                                 break;
                         }
 
-                        m_PanCallback(-panning * ScrollSpeed, inputEvent);
+                        m_PanCallback(-panning * ScrollSpeed);
                         return true;
                     }
 
@@ -128,7 +124,7 @@ public class ViewPannerCSharpImpl
                                 break;
                         }
 
-                        m_PanCallback(-panning * ScrollSpeed, inputEvent);
+                        m_PanCallback(-panning * ScrollSpeed);
                         return true;
                     }
 
@@ -136,7 +132,7 @@ public class ViewPannerCSharpImpl
                     {
                         // Compute the zoom factor.
                         var zoom = scroll_vec.X + scroll_vec.Y > 0 ? 1.0f / m_ScrollZoomFactor : m_ScrollZoomFactor;
-                        m_ZoomCallback(zoom, mb.Position, inputEvent);
+                        m_ZoomCallback(zoom, mb.Position);
                         return true;
                     }
                 }
@@ -158,16 +154,16 @@ public class ViewPannerCSharpImpl
 
                 break;
             case InputEventMouseMotion mm when m_IsDragging:
-                m_PanCallback(mm.Relative, inputEvent);
+                m_PanCallback(mm.Relative);
                 if (canvasRect != new Rect2()) Input.WarpMouse(mm.Position);
 
                 return true;
             case InputEventMagnifyGesture magnify_gesture:
                 // Zoom gesture
-                m_ZoomCallback(magnify_gesture.Factor, magnify_gesture.Position, inputEvent);
+                m_ZoomCallback(magnify_gesture.Factor, magnify_gesture.Position);
                 return true;
             case InputEventPanGesture pan_gesture:
-                m_PanCallback(-pan_gesture.Delta * ScrollSpeed, inputEvent);
+                m_PanCallback(-pan_gesture.Delta * ScrollSpeed);
                 break;
             case InputEventScreenDrag screen_drag:
                 // if (Input::get_singleton() . is_emulating_mouse_from_touch() || Input::get_singleton() . is_emulating_touch_from_mouse())
@@ -177,7 +173,7 @@ public class ViewPannerCSharpImpl
                 // }
                 // else
                 // {
-                m_PanCallback(screen_drag.Relative, inputEvent);
+                m_PanCallback(screen_drag.Relative);
                 // }
                 break;
             case InputEventKey k when PanViewShortcut.HasValidEvent() && PanViewShortcut.MatchesEvent(k):

@@ -1,28 +1,25 @@
 ﻿#if TOOLS
 
-#region
-
 using System.Diagnostics.CodeAnalysis;
 using Godot;
 
-#endregion
-
 namespace DEYU.GDUtilities.UnityAtlasTextureCreatorUtility;
-
 // This script contains only the public apis of the UnityAtlasTextureCreator
 
 /// <summary>
-/// Provides a unified window for ease of AtlasTexture creation and modification.
+///     Provides a unified window for ease of AtlasTexture creation and modification.
 /// </summary>
 [Tool]
 public partial class UnityAtlasTextureCreator : Control
 {
     /// <summary>
-    /// Initializes the window
+    ///     Initializes the window
     /// </summary>
     /// <param name="editorPlugin"></param>
     public void Initialize(EditorPlugin editorPlugin)
     {
+        m_EditorPlugin = editorPlugin;
+
         var editorInterface = editorPlugin.GetEditorInterface();
         m_EditorFileSystem = editorInterface.GetResourceFilesystem();
         var settings = editorInterface.GetEditorSettings();
@@ -39,12 +36,12 @@ public partial class UnityAtlasTextureCreator : Control
     }
 
     /// <summary>
-    /// Change the editing texture
+    ///     Change the editing texture
     /// </summary>
     /// <param name="newTexture">New texture for editing, pass null for abort</param>
-    public void UpdateEditingTexture([AllowNull]Texture2D newTexture)
+    public void UpdateEditingTexture([AllowNull] Texture2D newTexture)
     {
-        if (m_InspectingTex is not null)
+        if (m_InspectingTex != null)
         {
             m_InspectingTex.Changed -= OnTexChanged;
             m_InspectingTex = null;
@@ -59,16 +56,15 @@ public partial class UnityAtlasTextureCreator : Control
 
         UpdateControls();
 
-        if (m_InspectingTex is null)
+        if (m_InspectingTex == null)
         {
             HideSlicerMenu();
             return;
         }
 
-        m_InspectingTexName = GDPath.GetFileNameWithoutExtension(m_InspectingTex.ResourcePath);
-        m_CurrentSourceTexturePath = GDPath.GetDirectoryName(m_InspectingTex.ResourcePath);
-        m_InspectingTex.Changed += OnTexChanged;
-
+        m_InspectingTexName = GdPath.GetFileNameWithoutExtension(m_InspectingTex.ResourcePath);
+        m_CurrentSourceTexturePath = GdPath.GetDirectoryName(m_InspectingTex.ResourcePath);
+        RegResourceChanged(m_InspectingTex, OnTexChanged);
         UpdateInspectingTexture();
 
         EditDrawer.QueueRedraw();

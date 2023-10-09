@@ -1,8 +1,9 @@
 ﻿#if TOOLS
+
+
 using System.Collections.Generic;
 
 namespace DEYU.GDUtilities.UnityAtlasTextureCreatorUtility;
-
 // This script contains the exports and api used by the Save & Discard Section of the UnityAtlasTextureCreator
 
 public partial class UnityAtlasTextureCreator
@@ -19,10 +20,7 @@ public partial class UnityAtlasTextureCreator
         public ListItemReference<T> GetNext()
         {
             var nextIndex = m_Index + 1;
-            if (nextIndex < m_BackingList.Count)
-            {
-                return new(m_BackingList, nextIndex);
-            }
+            if (nextIndex < m_BackingList.Count) return new(m_BackingList, nextIndex);
 
             return new(m_BackingList, -1);
         }
@@ -30,10 +28,7 @@ public partial class UnityAtlasTextureCreator
         public ListItemReference<T> GetPrev()
         {
             var previousIndex = m_Index - 1;
-            if (previousIndex > 0)
-            {
-                return new(m_BackingList, previousIndex);
-            }
+            if (previousIndex > 0) return new(m_BackingList, previousIndex);
 
             return new(m_BackingList, -1);
         }

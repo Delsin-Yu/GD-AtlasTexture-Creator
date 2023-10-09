@@ -1,21 +1,17 @@
 ﻿#if TOOLS
 
-#region
 
 using System;
 using System.Runtime.InteropServices;
 using Godot;
 
-#endregion
-
 namespace DEYU.GDUtilities.UnityAtlasTextureCreatorUtility;
-
 // This script contains the api used by the Draw submodule from the Primary View Section of the UnityAtlasTextureCreator
 
 public partial class UnityAtlasTextureCreator
 {
     /// <summary>
-    /// Core method for drawing everything inside the main rect editor viewport
+    ///     Core method for drawing everything inside the main rect editor viewport
     /// </summary>
     private void DrawRegion()
     {
@@ -68,12 +64,10 @@ public partial class UnityAtlasTextureCreator
         }
 
         if (AtlasTextureSlicerButton.ButtonPressed)
-        {
             foreach (var slicePreviewRect in m_SlicePreview)
             {
                 DrawRectFrame(slicePreviewRect, selectHandle, Colors.Red, Dragging.Area);
             }
-        }
 
         RenderingServer.CanvasItemAddSetTransform(rid, new());
 
@@ -127,7 +121,7 @@ public partial class UnityAtlasTextureCreator
     }
 
     /// <summary>
-    /// Helper method to draw a frame around a rectangle with optional handles
+    ///     Helper method to draw a frame around a rectangle with optional handles
     /// </summary>
     private void DrawRectFrame(in Rect2 rect, Texture2D selectHandle, in Color color, Dragging drawHandleType)
     {
