@@ -7,13 +7,19 @@ Based on .Net, `GD AtlasTexture Creator` provides a handy editor window that res
 
 ### Installation
 
+0. Configure the .Net runtime according to the `Prerequisites` section of the [Godot Engine Docs](https://docs.godotengine.org/en/stable/tutorials/scripting/c_sharp/c_sharp_basics.html).
+
 1. Download the zip file from [Release](https://github.com/Delsin-Yu/GD-AtlasTexture-Creator/releases/download/1.0.1/GD-AtlasTexture-Creator.1.0.1.zip).
 
 2. Decompress the file, and place the `addons` folder directly into the root of your project.
 
-3. Navigate to `Project/Project Settings/Plugins` in Godot Editor, locate the `GD AtlasTexture Creator` from the `Installed Plugins` list, and then check `Enable` under the `Status` column.
+3. If you have not yet create a C# solution, select `Project/Tools/C#/Create C# solution`, then click the `Build` button at top right corner.
+![image](./README.IMG/00a.png)
+![image](./README.IMG/00b.png)
 
-4. The dedicated inspector for `GD AtlasTexture Creator` will now launch located at the `Bottom Right Dock slot`
+4. Navigate to `Project/Project Settings/Plugins` in Godot Editor, locate the `GD AtlasTexture Creator` from the `Installed Plugins` list, and then check `Enable` under the `Status` column.
+
+5. The dedicated inspector for `GD AtlasTexture Creator` will now launch located at the `Bottom Right Dock slot`
 
 ### Usage
 
@@ -103,13 +109,19 @@ Button|Definition
 
 ### 安装
 
+0. 根据 [Godot Engine Docs](https://docs.godotengine.org/en/stable/tutorials/scripting/c_sharp/c_sharp_basics.html) 中 `Prerequisites` 一栏的内容配置 .Net 运行时。
+
 1. 从[Release](https://github.com/Delsin-Yu/GD-AtlasTexture-Creator/releases/download/1.0.1/GD-AtlasTexture-Creator.1.0.1.zip)处下载压缩包。
 
 2. 解压下载完成的压缩包，并且将其中的`addons`文件夹放置在项目工程文件夹的根目录。
 
-3. 前往Godot编辑器的`项目/项目设置.../插件`，从`已安装插件`列表中找到`GD AtlasTexture Creator`项目，然后将`状态`一列中的`启用`栏目勾上
+3. 如果从未建立过C#解决方案，则执行 `Project/Tools/C#/Create C# solution` ，之后点击窗口右上角的 `Build`。
+![image](./README.IMG/00a.png)
+![image](./README.IMG/00b.png)
 
-4. `GD AtlasTexture Creator`专用的检查器将会启动于编辑器的`右下停靠栏`
+4. 前往Godot编辑器的`项目/项目设置.../插件`，从`已安装插件`列表中找到`GD AtlasTexture Creator`项目，然后将`状态`一列中的`启用`栏目勾上
+
+5. `GD AtlasTexture Creator`专用的检查器将会启动于编辑器的`右下停靠栏`
 
 ### 使用
 
