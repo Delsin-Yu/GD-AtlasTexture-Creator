@@ -20,10 +20,15 @@ public partial class UnityAtlasTextureCreator : Control
     {
         m_EditorPlugin = editorPlugin;
 
+#if GODOT4_2_OR_GREATER
+        var editorInterface = EditorInterface.Singleton;
+        Theme = editorInterface.GetEditorTheme();
+#else
         var editorInterface = editorPlugin.GetEditorInterface();
+        Theme = editorInterface.GetBaseControl().GetEditorTheme();
+#endif
         m_EditorFileSystem = editorInterface.GetResourceFilesystem();
         var settings = editorInterface.GetEditorSettings();
-        Theme = editorInterface.GetBaseControl().Theme;
 
         InitializeSaveDiscardSection();
         InitializeAtlasTextureMiniInspector();
