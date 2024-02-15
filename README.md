@@ -2,7 +2,7 @@
 
 ## English
 
-Supports `Godot 4.1 With .Net`  
+Supports `Godot 4.1/4.2 With .Net`
 Based on .Net, `GD AtlasTexture Creator` provides a handy editor window that resembles the `SpriteEditor` from UnityEditor for ease of `AtlasTexture` creation.
 
 ### Installation
@@ -104,7 +104,7 @@ Button|Definition
 
 ## 中文
 
-此插件支持 `包含.Net模块的Godot 4.1`  
+此插件支持 `包含.Net模块的Godot 4.1/4.2`  
 基于 .Net，`GD AtlasTexture Creator` 提供一个类似于Unity编辑器中`Sprite编辑器`的实用的编辑器，用于简化`AtlasTexture`的创建过程。
 
 ### 安装
