@@ -83,9 +83,10 @@ Displays the `Edible Parameters` for the current selected `AtlasTexture`
 
 ![image](./README.IMG/04.png)
 
-Control|Description
-:-|:-
-`X`|`Remove` the selected `AtlasTexture`, only available for `temporarily` created AtlasTextures.
+Control|Description|Hotkey
+:-|:-|:-
+`◧`|`Duplicate` the selected `AtlasTexture` right below, only available for `temporarily` created AtlasTextures. |`Ctrl + D`
+`X`|`Remove` the selected `AtlasTexture`, only available for `temporarily` created AtlasTextures. |`Del`
 `Name`|Edit the `Name` of the selected `AtlasTexture`, only available for `temporarily` created AtlasTextures.
 `Region`|Edit the `Region` of the selected `AtlasTexture`.
 `Margin`|Edit the `Margin` of the selected `AtlasTexture`.
@@ -185,9 +186,10 @@ Avoid Existing (Smart)|区域被现有AtlasTextures占据的新AtlasTexture切�
 
 ![image](./README.IMG/04.png)
 
-控件|介绍
-:-|:-
-`X`|`删除`选定的`AtlasTexture`，仅适用于`临时`创建的AtlasTextures。
+控件|介绍|热键
+:-|:-|:-
+`◧`|`复制`选定的`AtlasTexture`到下方，仅适用于`临时`创建的AtlasTextures。|`Ctrl + D`
+`X`|`删除`选定的`AtlasTexture`，仅适用于`临时`创建的AtlasTextures。|`Del`
 `Name`|编辑所选`AtlasTexture`的`名称`。
 `Region`|编辑所选`AtlasTexture`的`Region`属性。
 `Margin`|编辑所选`AtlasTexture`的`Margin`属性。

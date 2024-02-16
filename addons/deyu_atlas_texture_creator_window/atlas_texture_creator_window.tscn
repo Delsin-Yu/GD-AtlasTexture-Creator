@@ -1,8 +1,23 @@
-[gd_scene load_steps=2 format=3 uid="uid://deqj2mqv43cr8"]
+[gd_scene load_steps=6 format=3 uid="uid://deqj2mqv43cr8"]
 
 [ext_resource type="Script" path="res://addons/deyu_atlas_texture_creator_window/UnityAtlasTextureCreator.cs" id="1_mppxe"]
 
-[node name="atlas_texture_creator_window" type="Control" node_paths=PackedStringArray("SnapModeButton", "AtlasTextureSlicerButton", "ScanAtlasInFolderButton", "ScanAtlasInProjectButton", "EditDrawer", "ZoomInButton", "ZoomResetButton", "ZoomOutButton", "VScroll", "HScroll", "MiniInspectorWindow", "NewItemLabel", "DeleteItemButton", "AtlasTextureNameInput", "AtlasTextureRegionXInput", "AtlasTextureRegionYInput", "AtlasTextureRegionWInput", "AtlasTextureRegionHInput", "AtlasTextureMarginXInput", "AtlasTextureMarginYInput", "AtlasTextureMarginWInput", "AtlasTextureMarginHInput", "AtlasTextureFilterClipInput", "DiscardButton", "SaveAndUpdateButton", "SlicerMenu", "SlicerTypeSelection", "PreservationMethodSelection", "ExecuteSliceButton", "NewAtlasTextureMarginXInput", "NewAtlasTextureMarginYInput", "NewAtlasTextureMarginWInput", "NewAtlasTextureMarginHInput", "FilterClip", "CellSizeGroup", "CellSize_PixelSizeX", "CellSize_PixelSizeY", "CellSize_OffsetX", "CellSize_OffsetY", "CellSize_PaddingX", "CellSize_PaddingY", "CellSize_KeepEmptyRects", "CellCountGroup", "CellCount_ColumnRowX", "CellCount_ColumnRowY", "CellCount_OffsetX", "CellCount_OffsetY", "CellCount_PaddingX", "CellCount_PaddingY", "CellCount_KeepEmptyRects")]
+[sub_resource type="InputEventKey" id="InputEventKey_3ptgg"]
+device = -1
+ctrl_pressed = true
+keycode = 68
+
+[sub_resource type="Shortcut" id="Shortcut_sqdp3"]
+events = [SubResource("InputEventKey_3ptgg")]
+
+[sub_resource type="InputEventKey" id="InputEventKey_ih8ak"]
+device = -1
+keycode = 4194312
+
+[sub_resource type="Shortcut" id="Shortcut_6h25o"]
+events = [SubResource("InputEventKey_ih8ak")]
+
+[node name="atlas_texture_creator_window" type="Control" node_paths=PackedStringArray("SnapModeButton", "AtlasTextureSlicerButton", "ScanAtlasInFolderButton", "ScanAtlasInProjectButton", "EditDrawer", "ZoomInButton", "ZoomResetButton", "ZoomOutButton", "VScroll", "HScroll", "MiniInspectorWindow", "NewItemLabel", "DeleteItemButton", "DuplicateItemButton", "AtlasTextureNameInput", "AtlasTextureRegionXInput", "AtlasTextureRegionYInput", "AtlasTextureRegionWInput", "AtlasTextureRegionHInput", "AtlasTextureMarginXInput", "AtlasTextureMarginYInput", "AtlasTextureMarginWInput", "AtlasTextureMarginHInput", "AtlasTextureFilterClipInput", "DiscardButton", "SaveAndUpdateButton", "SlicerMenu", "SlicerTypeSelection", "PreservationMethodSelection", "ExecuteSliceButton", "NewAtlasTextureMarginXInput", "NewAtlasTextureMarginYInput", "NewAtlasTextureMarginWInput", "NewAtlasTextureMarginHInput", "FilterClip", "CellSizeGroup", "CellSize_PixelSizeX", "CellSize_PixelSizeY", "CellSize_OffsetX", "CellSize_OffsetY", "CellSize_PaddingX", "CellSize_PaddingY", "CellSize_KeepEmptyRects", "CellCountGroup", "CellCount_ColumnRowX", "CellCount_ColumnRowY", "CellCount_OffsetX", "CellCount_OffsetY", "CellCount_PaddingX", "CellCount_PaddingY", "CellCount_KeepEmptyRects")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -23,6 +38,7 @@ HScroll = NodePath("VBoxContainer/EditorViewport/Painter/HScrollBar")
 MiniInspectorWindow = NodePath("VBoxContainer/EditorViewport/AtlasTextureMiniInspector")
 NewItemLabel = NodePath("VBoxContainer/EditorViewport/AtlasTextureMiniInspector/MarginContainer/VBoxContainer/HBoxContainer/NewIndicator")
 DeleteItemButton = NodePath("VBoxContainer/EditorViewport/AtlasTextureMiniInspector/MarginContainer/VBoxContainer/HBoxContainer/DeleteButton")
+DuplicateItemButton = NodePath("VBoxContainer/EditorViewport/AtlasTextureMiniInspector/MarginContainer/VBoxContainer/HBoxContainer/DuplicateButton")
 AtlasTextureNameInput = NodePath("VBoxContainer/EditorViewport/AtlasTextureMiniInspector/MarginContainer/VBoxContainer/GridContainer/NameEdit")
 AtlasTextureRegionXInput = NodePath("VBoxContainer/EditorViewport/AtlasTextureMiniInspector/MarginContainer/VBoxContainer/GridContainer/GridContainer/XEdit")
 AtlasTextureRegionYInput = NodePath("VBoxContainer/EditorViewport/AtlasTextureMiniInspector/MarginContainer/VBoxContainer/GridContainer/GridContainer/YEdit")
@@ -210,9 +226,16 @@ horizontal_alignment = 1
 layout_mode = 2
 size_flags_horizontal = 3
 
+[node name="DuplicateButton" type="Button" parent="VBoxContainer/EditorViewport/AtlasTextureMiniInspector/MarginContainer/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(30, 0)
+layout_mode = 2
+shortcut = SubResource("Shortcut_sqdp3")
+text = "◧"
+
 [node name="DeleteButton" type="Button" parent="VBoxContainer/EditorViewport/AtlasTextureMiniInspector/MarginContainer/VBoxContainer/HBoxContainer"]
 custom_minimum_size = Vector2(30, 0)
 layout_mode = 2
+shortcut = SubResource("Shortcut_6h25o")
 text = "X"
 
 [node name="GridContainer" type="GridContainer" parent="VBoxContainer/EditorViewport/AtlasTextureMiniInspector/MarginContainer/VBoxContainer"]
