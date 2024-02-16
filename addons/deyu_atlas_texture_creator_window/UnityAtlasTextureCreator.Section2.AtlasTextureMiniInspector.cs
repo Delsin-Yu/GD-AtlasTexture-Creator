@@ -1,6 +1,7 @@
 ﻿#if TOOLS
 
 
+using System.Linq;
 using Godot;
 
 namespace DEYU.GDUtilities.UnityAtlasTextureCreatorUtility;
@@ -12,7 +13,8 @@ public partial class UnityAtlasTextureCreator
 
     [Export] private Label NewItemLabel { get; set; }
     [Export] private Button DeleteItemButton { get; set; }
-
+    [Export] private Button DuplicateItemButton { get; set; }
+    
     [Export, ExportSubgroup("AtlasTexture Mini Inspector Section/Inputs")] private LineEdit AtlasTextureNameInput { get; set; }
 
     [Export, ExportSubgroup("AtlasTexture Mini Inspector Section/Inputs/Region")]
@@ -139,7 +141,18 @@ public partial class UnityAtlasTextureCreator
             {
                 if (m_InspectingAtlasTextureInfo is null || !m_InspectingAtlasTextureInfo.IsTemp) return;
                 m_EditingAtlasTexture.Remove(m_InspectingAtlasTextureInfo);
-                m_InspectingAtlasTextureInfo = null;
+                m_InspectingAtlasTextureInfo = m_EditingAtlasTexture.Count > 0 ? m_EditingAtlasTexture.Last() : null;
+                UpdateControls();
+            }
+        );
+        RegButtonPressed(
+            DuplicateItemButton,
+            () =>
+            {
+                if (m_InspectingAtlasTextureInfo is null || !m_InspectingAtlasTextureInfo.IsTemp) return;
+                var newInfo = m_InspectingAtlasTextureInfo.Duplicate(m_InspectingTexName, m_EditingAtlasTexture);
+                m_EditingAtlasTexture.Add(newInfo);
+                m_InspectingAtlasTextureInfo = newInfo;
                 UpdateControls();
             }
         );
@@ -194,11 +207,13 @@ public partial class UnityAtlasTextureCreator
         if (atlasTextureInfo.IsTemp)
         {
             NewItemLabel.Show();
+            DuplicateItemButton.Show();
             DeleteItemButton.Show();
         }
         else
         {
             NewItemLabel.Hide();
+            DuplicateItemButton.Hide();
             DeleteItemButton.Hide();
         }
 

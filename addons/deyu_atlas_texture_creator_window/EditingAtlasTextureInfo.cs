@@ -60,8 +60,8 @@ public class EditingAtlasTextureInfo
             dataResourcePath
         );
     }
-
-    public static EditingAtlasTextureInfo CreateEmpty(in Rect2 region, string textureName, in Rect2 margin, bool filterClip, IEnumerable<EditingAtlasTextureInfo> existingAtlasTextures)
+    
+    private static string GetNextNameCandidate(string textureName, IEnumerable<EditingAtlasTextureInfo> existingAtlasTextures)
     {
         var textureNameLower = textureName.ToLower();
         var existingAtlasTextureNamesLowerCase = existingAtlasTextures.Select(x => x.Name.ToLower()).ToHashSet();
@@ -74,6 +74,13 @@ public class EditingAtlasTextureInfo
         }
         while (existingAtlasTextureNamesLowerCase.Contains(nameCandidate));
 
+        return nameCandidate;
+    }
+
+    public static EditingAtlasTextureInfo CreateEmpty(in Rect2 region, string textureName, in Rect2 margin, bool filterClip, IEnumerable<EditingAtlasTextureInfo> existingAtlasTextures)
+    {
+        var nameCandidate = GetNextNameCandidate(textureName, existingAtlasTextures);
+
         var info =
             new EditingAtlasTextureInfo(null, region, margin, filterClip, null, null)
             {
@@ -82,6 +89,23 @@ public class EditingAtlasTextureInfo
             };
 
         return info;
+    }
+
+    public EditingAtlasTextureInfo Duplicate(string textureName, IEnumerable<EditingAtlasTextureInfo> existingAtlasTextures)
+    {
+        var nameCandidate = GetNextNameCandidate(textureName, existingAtlasTextures);
+        var rect = Region;
+        rect.Position += new Vector2(0.0f, rect.Size.Y);
+        return new EditingAtlasTextureInfo(null, 
+            rect,
+            Margin,
+            FilterClip,
+            nameCandidate,
+            m_ResourcePath
+        )
+        {
+            Modified = true,
+        };
     }
 
     public bool TrySetName(in string name)
@@ -140,7 +164,7 @@ public class EditingAtlasTextureInfo
                 };
             m_ResourcePath = GdPath.Combine(sourceTextureDirectory, $"{Name}.tres");
         }
-
+        
         m_BackingAtlasTexture.Region = Region;
         m_BackingAtlasTexture.Margin = Margin;
         m_BackingAtlasTexture.FilterClip = FilterClip;
