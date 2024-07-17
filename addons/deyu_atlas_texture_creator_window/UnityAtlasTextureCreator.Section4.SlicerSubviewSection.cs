@@ -337,67 +337,41 @@ public partial class UnityAtlasTextureCreator
     /// <summary>
     ///     Core method for Automatic Slice Calculation
     /// </summary>
-    private static void CalculateAutomaticSlice(Texture2D texture, IList<Rect2> sliceData)
+    private static void CalculateAutomaticSlice(Texture2D texture, IList<Rect2> sliceData, bool mergeRects=true)
     {
         sliceData.Clear();
+        
+        var mask = new Bitmap();
+        mask.CreateFromImageAlpha(texture.GetImage());
+        
+        var maskRect = new Rect2I(Vector2I.Zero, mask.GetSize());
 
-        var mask = CreateAlphaMask(texture.GetImage(), out var width, out var height);
-
-        for (var y = 0; y < height; y++)
+        var polygons = mask.OpaqueToPolygons(maskRect, 0.0f);
+        
+        foreach (var polygon in polygons)
         {
-            for (var x = 0; x < width; x++)
+            var rect = new Rect2(polygon.First(), Vector2.Zero);
+            for (int i = 1; i < polygon.Length; i++)
             {
-                if (!mask[x, y]) continue;
-                var found = false;
-                foreach (var itemReference in ListItemReference<Rect2>.CreateForEach(sliceData))
+                rect = rect.Expand(polygon[i]);
+            }
+
+            if (!mergeRects)
+            {
+                sliceData.Add(rect);
+            }
+            else
+            {
+                var intersected = false;
+                for (var index = 0; index < sliceData.Count; index++)
                 {
-                    var grown = itemReference.Value.Grow(1.5f);
-                    if (!grown.HasPoint(new(x, y))) continue;
-                    itemReference.Value = itemReference.Value.Expand(new(x, y));
-                    itemReference.Value = itemReference.Value.Expand(new(x + 1, y + 1));
-                    x = (int)(itemReference.Value.Position.X + itemReference.Value.Size.X - 1);
-                    var merged = true;
-                    while (merged)
-                    {
-                        merged = false;
-                        var queue_erase = false;
-                        for (var f = ListItemReference<Rect2>.CreateFor(sliceData); f.IsValid; f = f.GetNext())
-                        {
-                            if (queue_erase)
-                            {
-                                var prev = f.GetPrev();
-                                if (prev.IsValid) sliceData.Remove(prev.Value);
-                                queue_erase = false;
-                            }
-
-                            if (!f.IsValid || !itemReference.IsValid) break;
-
-                            if (f.Value == itemReference.Value) continue;
-
-                            if (!itemReference.Value.Grow(1).Intersects(f.Value)) continue;
-                            itemReference.Value = itemReference.Value.Expand(f.Value.Position);
-                            itemReference.Value = itemReference.Value.Expand(f.Value.Position + f.Value.Size);
-                            var prevF = f.GetPrev();
-                            if (prevF.IsValid)
-                            {
-                                f = prevF;
-                                var nextF = f.GetNext();
-                                if (nextF.IsValid) sliceData.Remove(nextF.Value);
-                            }
-                            else queue_erase = true;
-
-                            // Can't delete the first rect in the list.
-                            merged = true;
-                        }
-                    }
-
-                    found = true;
+                    var existSlice = sliceData[index];
+                    if (!rect.Intersects(existSlice)) continue;
+                    sliceData[index] = existSlice.Merge(rect);
+                    intersected = true;
                     break;
                 }
-
-                if (found) continue;
-                var new_rect = new Rect2(x, y, 1, 1);
-                sliceData.Add(new_rect);
+                if (!intersected) sliceData.Add(rect);
             }
         }
     }
