@@ -3,32 +3,32 @@
 
 using Godot;
 
-namespace DEYU.GDUtilities.UnityAtlasTextureCreatorUtility;
+namespace GodotTextureSlicer;
 // This script contains the exports and api used by the AtlasTexture Mini Inspector Section of the UnityAtlasTextureCreator
 
 public partial class UnityAtlasTextureCreator
 {
-    [Export, ExportSubgroup("AtlasTexture Mini Inspector Section")] private Control MiniInspectorWindow { get; set; }
+    [Export, ExportSubgroup("AtlasTexture Mini Inspector Section")] private Control? MiniInspectorWindow { get; set; }
 
-    [Export] private Label NewItemLabel { get; set; }
-    [Export] private Button DeleteItemButton { get; set; }
+    [Export] private Label? NewItemLabel { get; set; }
+    [Export] private Button? DeleteItemButton { get; set; }
 
-    [Export, ExportSubgroup("AtlasTexture Mini Inspector Section/Inputs")] private LineEdit AtlasTextureNameInput { get; set; }
+    [Export, ExportSubgroup("AtlasTexture Mini Inspector Section/Inputs")] private LineEdit? AtlasTextureNameInput { get; set; }
 
     [Export, ExportSubgroup("AtlasTexture Mini Inspector Section/Inputs/Region")]
-    private SpinBox AtlasTextureRegionXInput { get; set; }
+    private SpinBox? AtlasTextureRegionXInput { get; set; }
 
-    [Export] private SpinBox AtlasTextureRegionYInput { get; set; }
-    [Export] private SpinBox AtlasTextureRegionWInput { get; set; }
-    [Export] private SpinBox AtlasTextureRegionHInput { get; set; }
+    [Export] private SpinBox? AtlasTextureRegionYInput { get; set; }
+    [Export] private SpinBox? AtlasTextureRegionWInput { get; set; }
+    [Export] private SpinBox? AtlasTextureRegionHInput { get; set; }
 
     [Export, ExportSubgroup("AtlasTexture Mini Inspector Section/Inputs/Margin")]
-    private SpinBox AtlasTextureMarginXInput { get; set; }
+    private SpinBox? AtlasTextureMarginXInput { get; set; }
 
-    [Export] private SpinBox AtlasTextureMarginYInput { get; set; }
-    [Export] private SpinBox AtlasTextureMarginWInput { get; set; }
-    [Export] private SpinBox AtlasTextureMarginHInput { get; set; }
-    [Export] private CheckBox AtlasTextureFilterClipInput { get; set; }
+    [Export] private SpinBox? AtlasTextureMarginYInput { get; set; }
+    [Export] private SpinBox? AtlasTextureMarginWInput { get; set; }
+    [Export] private SpinBox? AtlasTextureMarginHInput { get; set; }
+    [Export] private CheckBox? AtlasTextureFilterClipInput { get; set; }
 
     /// <summary>
     ///     Initialize callbacks for the MiniInspector
@@ -36,110 +36,110 @@ public partial class UnityAtlasTextureCreator
     private void InitializeAtlasTextureMiniInspector()
     {
         RegLineEdit(
-            AtlasTextureNameInput,
+            AtlasTextureNameInput!,
             newText =>
             {
-                if (m_InspectingAtlasTextureInfo is null || !m_InspectingAtlasTextureInfo.IsTemp) return;
-                if (m_InspectingAtlasTextureInfo.TrySetName(newText)) UpdateControls();
+                if (_inspectingAtlasTextureInfo is null || !_inspectingAtlasTextureInfo.IsTemp) return;
+                if (_inspectingAtlasTextureInfo.TrySetName(newText)) UpdateControls();
             }
         );
 
         RegRangeValueChanged(
-            AtlasTextureRegionXInput,
+            AtlasTextureRegionXInput!,
             newRegionX =>
             {
-                if (m_InspectingAtlasTextureInfo is null) return;
-                var value = m_InspectingAtlasTextureInfo.Region;
+                if (_inspectingAtlasTextureInfo is null) return;
+                var value = _inspectingAtlasTextureInfo.Region;
                 value.Position = new((float)newRegionX, value.Position.Y);
-                if (m_InspectingAtlasTextureInfo.TrySetRegion(value)) UpdateControls();
+                if (_inspectingAtlasTextureInfo.TrySetRegion(value)) UpdateControls();
             }
         );
         RegRangeValueChanged(
-            AtlasTextureRegionYInput,
+            AtlasTextureRegionYInput!,
             newRegionY =>
             {
-                if (m_InspectingAtlasTextureInfo is null) return;
-                var value = m_InspectingAtlasTextureInfo.Region;
+                if (_inspectingAtlasTextureInfo is null) return;
+                var value = _inspectingAtlasTextureInfo.Region;
                 value.Position = new(value.Position.X, (float)newRegionY);
-                if (m_InspectingAtlasTextureInfo.TrySetRegion(value)) UpdateControls();
+                if (_inspectingAtlasTextureInfo.TrySetRegion(value)) UpdateControls();
             }
         );
         RegRangeValueChanged(
-            AtlasTextureRegionWInput,
+            AtlasTextureRegionWInput!,
             newRegionW =>
             {
-                if (m_InspectingAtlasTextureInfo is null) return;
-                var value = m_InspectingAtlasTextureInfo.Region;
+                if (_inspectingAtlasTextureInfo is null) return;
+                var value = _inspectingAtlasTextureInfo.Region;
                 value.Size = new((float)newRegionW, value.Size.Y);
-                if (m_InspectingAtlasTextureInfo.TrySetRegion(value)) UpdateControls();
+                if (_inspectingAtlasTextureInfo.TrySetRegion(value)) UpdateControls();
             }
         );
         RegRangeValueChanged(
-            AtlasTextureRegionHInput,
+            AtlasTextureRegionHInput!,
             newRegionH =>
             {
-                if (m_InspectingAtlasTextureInfo is null) return;
-                var value = m_InspectingAtlasTextureInfo.Region;
+                if (_inspectingAtlasTextureInfo is null) return;
+                var value = _inspectingAtlasTextureInfo.Region;
                 value.Size = new(value.Size.X, (float)newRegionH);
-                if (m_InspectingAtlasTextureInfo.TrySetRegion(value)) UpdateControls();
+                if (_inspectingAtlasTextureInfo.TrySetRegion(value)) UpdateControls();
             }
         );
 
         RegRangeValueChanged(
-            AtlasTextureMarginXInput,
+            AtlasTextureMarginXInput!,
             newMarginX =>
             {
-                if (m_InspectingAtlasTextureInfo is null) return;
-                var value = m_InspectingAtlasTextureInfo.Margin;
+                if (_inspectingAtlasTextureInfo is null) return;
+                var value = _inspectingAtlasTextureInfo.Margin;
                 value.Position = new((float)newMarginX, value.Position.Y);
-                if (m_InspectingAtlasTextureInfo.TrySetMargin(value)) UpdateControls();
+                if (_inspectingAtlasTextureInfo.TrySetMargin(value)) UpdateControls();
             }
         );
         RegRangeValueChanged(
-            AtlasTextureMarginYInput,
+            AtlasTextureMarginYInput!,
             newMarginY =>
             {
-                if (m_InspectingAtlasTextureInfo is null) return;
-                var value = m_InspectingAtlasTextureInfo.Margin;
+                if (_inspectingAtlasTextureInfo is null) return;
+                var value = _inspectingAtlasTextureInfo.Margin;
                 value.Position = new(value.Position.X, (float)newMarginY);
-                if (m_InspectingAtlasTextureInfo.TrySetMargin(value)) UpdateControls();
+                if (_inspectingAtlasTextureInfo.TrySetMargin(value)) UpdateControls();
             }
         );
         RegRangeValueChanged(
-            AtlasTextureMarginWInput,
+            AtlasTextureMarginWInput!,
             newMarginW =>
             {
-                if (m_InspectingAtlasTextureInfo is null) return;
-                var value = m_InspectingAtlasTextureInfo.Margin;
+                if (_inspectingAtlasTextureInfo is null) return;
+                var value = _inspectingAtlasTextureInfo.Margin;
                 value.Size = new((float)newMarginW, value.Size.Y);
-                if (m_InspectingAtlasTextureInfo.TrySetMargin(value)) UpdateControls();
+                if (_inspectingAtlasTextureInfo.TrySetMargin(value)) UpdateControls();
             }
         );
         RegRangeValueChanged(
-            AtlasTextureMarginHInput,
+            AtlasTextureMarginHInput!,
             newMarginH =>
             {
-                if (m_InspectingAtlasTextureInfo is null) return;
-                var value = m_InspectingAtlasTextureInfo.Margin;
+                if (_inspectingAtlasTextureInfo is null) return;
+                var value = _inspectingAtlasTextureInfo.Margin;
                 value.Size = new(value.Size.X, (float)newMarginH);
-                if (m_InspectingAtlasTextureInfo.TrySetMargin(value)) UpdateControls();
+                if (_inspectingAtlasTextureInfo.TrySetMargin(value)) UpdateControls();
             }
         );
         RegButtonToggled(
-            AtlasTextureFilterClipInput,
+            AtlasTextureFilterClipInput!,
             newFilterClip =>
             {
-                if (m_InspectingAtlasTextureInfo is null) return;
-                if (m_InspectingAtlasTextureInfo.TrySetFilterClip(newFilterClip)) UpdateControls();
+                if (_inspectingAtlasTextureInfo is null) return;
+                if (_inspectingAtlasTextureInfo.TrySetFilterClip(newFilterClip)) UpdateControls();
             }
         );
         RegButtonPressed(
-            DeleteItemButton,
+            DeleteItemButton!,
             () =>
             {
-                if (m_InspectingAtlasTextureInfo is null || !m_InspectingAtlasTextureInfo.IsTemp) return;
-                m_EditingAtlasTexture.Remove(m_InspectingAtlasTextureInfo);
-                m_InspectingAtlasTextureInfo = null;
+                if (_inspectingAtlasTextureInfo is null || !_inspectingAtlasTextureInfo.IsTemp) return;
+                _editingAtlasTexture.Remove(_inspectingAtlasTextureInfo);
+                _inspectingAtlasTextureInfo = null;
                 UpdateControls();
             }
         );
@@ -151,33 +151,32 @@ public partial class UnityAtlasTextureCreator
     /// <param name="rounded"></param>
     private void SetSpinBoxMode(bool rounded)
     {
-        SetParams(AtlasTextureRegionXInput);
-        SetParams(AtlasTextureRegionYInput);
-        SetParams(AtlasTextureRegionWInput);
-        SetParams(AtlasTextureRegionHInput);
-        SetParams(AtlasTextureMarginXInput);
-        SetParams(AtlasTextureMarginYInput);
-        SetParams(AtlasTextureMarginWInput);
-        SetParams(AtlasTextureMarginHInput);
-        SetParams(NewAtlasTextureMarginXInput);
-        SetParams(NewAtlasTextureMarginYInput);
-        SetParams(NewAtlasTextureMarginWInput);
-        SetParams(NewAtlasTextureMarginHInput);
-        SetParams(CellSize_PixelSizeX);
-        SetParams(CellSize_PixelSizeY);
-        SetParams(CellSize_OffsetX);
-        SetParams(CellSize_OffsetY);
-        SetParams(CellSize_PaddingX);
-        SetParams(CellSize_PaddingY);
-        SetParams(CellCount_OffsetX);
-        SetParams(CellCount_OffsetY);
-        SetParams(CellCount_PaddingX);
-        SetParams(CellCount_PaddingY);
+        SetParams(AtlasTextureRegionXInput!);
+        SetParams(AtlasTextureRegionYInput!);
+        SetParams(AtlasTextureRegionWInput!);
+        SetParams(AtlasTextureRegionHInput!);
+        SetParams(AtlasTextureMarginXInput!);
+        SetParams(AtlasTextureMarginYInput!);
+        SetParams(AtlasTextureMarginWInput!);
+        SetParams(AtlasTextureMarginHInput!);
+        SetParams(NewAtlasTextureMarginXInput!);
+        SetParams(NewAtlasTextureMarginYInput!);
+        SetParams(NewAtlasTextureMarginWInput!);
+        SetParams(NewAtlasTextureMarginHInput!);
+        SetParams(CellSizePixelSizeX!);
+        SetParams(CellSizePixelSizeY!);
+        SetParams(CellSizeOffsetX!);
+        SetParams(CellSizeOffsetY!);
+        SetParams(CellSizePaddingX!);
+        SetParams(CellSizePaddingY!);
+        SetParams(CellCountOffsetX!);
+        SetParams(CellCountOffsetY!);
+        SetParams(CellCountPaddingX!);
+        SetParams(CellCountPaddingY!);
         return;
 
         void SetParams(SpinBox spinBox)
         {
-            if (spinBox is null) return;
             spinBox.Rounded = rounded;
             spinBox.Step = rounded ? 1 : 0.01f;
         }
@@ -189,30 +188,30 @@ public partial class UnityAtlasTextureCreator
     /// <param name="atlasTextureInfo"></param>
     private void UpdateInspectingMetrics(EditingAtlasTextureInfo atlasTextureInfo)
     {
-        AtlasTextureNameInput.Text = atlasTextureInfo.Name;
+        AtlasTextureNameInput!.Text = atlasTextureInfo.Name;
         AtlasTextureNameInput.Editable = atlasTextureInfo.IsTemp;
         if (atlasTextureInfo.IsTemp)
         {
-            NewItemLabel.Show();
-            DeleteItemButton.Show();
+            NewItemLabel!.Show();
+            DeleteItemButton!.Show();
         }
         else
         {
-            NewItemLabel.Hide();
-            DeleteItemButton.Hide();
+            NewItemLabel!.Hide();
+            DeleteItemButton!.Hide();
         }
 
-        AtlasTextureRegionXInput.SetValueNoSignal(atlasTextureInfo.Region.Position.X);
-        AtlasTextureRegionYInput.SetValueNoSignal(atlasTextureInfo.Region.Position.Y);
-        AtlasTextureRegionWInput.SetValueNoSignal(atlasTextureInfo.Region.Size.X);
-        AtlasTextureRegionHInput.SetValueNoSignal(atlasTextureInfo.Region.Size.Y);
+        AtlasTextureRegionXInput!.SetValueNoSignal(atlasTextureInfo.Region.Position.X);
+        AtlasTextureRegionYInput!.SetValueNoSignal(atlasTextureInfo.Region.Position.Y);
+        AtlasTextureRegionWInput!.SetValueNoSignal(atlasTextureInfo.Region.Size.X);
+        AtlasTextureRegionHInput!.SetValueNoSignal(atlasTextureInfo.Region.Size.Y);
 
-        AtlasTextureMarginXInput.SetValueNoSignal(atlasTextureInfo.Margin.Position.X);
-        AtlasTextureMarginYInput.SetValueNoSignal(atlasTextureInfo.Margin.Position.Y);
-        AtlasTextureMarginWInput.SetValueNoSignal(atlasTextureInfo.Margin.Size.X);
-        AtlasTextureMarginHInput.SetValueNoSignal(atlasTextureInfo.Margin.Size.Y);
+        AtlasTextureMarginXInput!.SetValueNoSignal(atlasTextureInfo.Margin.Position.X);
+        AtlasTextureMarginYInput!.SetValueNoSignal(atlasTextureInfo.Margin.Position.Y);
+        AtlasTextureMarginWInput!.SetValueNoSignal(atlasTextureInfo.Margin.Size.X);
+        AtlasTextureMarginHInput!.SetValueNoSignal(atlasTextureInfo.Margin.Size.Y);
 
-        AtlasTextureFilterClipInput.SetPressedNoSignal(atlasTextureInfo.FilterClip);
+        AtlasTextureFilterClipInput!.SetPressedNoSignal(atlasTextureInfo.FilterClip);
     }
 
     /// <summary>
@@ -220,22 +219,22 @@ public partial class UnityAtlasTextureCreator
     /// </summary>
     private void ResetInspectingMetrics()
     {
-        AtlasTextureNameInput.Text = string.Empty;
+        AtlasTextureNameInput!.Text = string.Empty;
 
-        NewItemLabel.Hide();
-        DeleteItemButton.Hide();
+        NewItemLabel!.Hide();
+        DeleteItemButton!.Hide();
 
-        AtlasTextureRegionXInput.SetValueNoSignal(0f);
-        AtlasTextureRegionYInput.SetValueNoSignal(0f);
-        AtlasTextureRegionWInput.SetValueNoSignal(0f);
-        AtlasTextureRegionHInput.SetValueNoSignal(0f);
+        AtlasTextureRegionXInput!.SetValueNoSignal(0f);
+        AtlasTextureRegionYInput!.SetValueNoSignal(0f);
+        AtlasTextureRegionWInput!.SetValueNoSignal(0f);
+        AtlasTextureRegionHInput!.SetValueNoSignal(0f);
 
-        AtlasTextureMarginXInput.SetValueNoSignal(0f);
-        AtlasTextureMarginYInput.SetValueNoSignal(0f);
-        AtlasTextureMarginWInput.SetValueNoSignal(0f);
-        AtlasTextureMarginHInput.SetValueNoSignal(0f);
+        AtlasTextureMarginXInput!.SetValueNoSignal(0f);
+        AtlasTextureMarginYInput!.SetValueNoSignal(0f);
+        AtlasTextureMarginWInput!.SetValueNoSignal(0f);
+        AtlasTextureMarginHInput!.SetValueNoSignal(0f);
 
-        AtlasTextureFilterClipInput.SetPressedNoSignal(false);
+        AtlasTextureFilterClipInput!.SetPressedNoSignal(false);
     }
 }
 

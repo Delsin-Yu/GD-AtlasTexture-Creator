@@ -3,7 +3,7 @@
 using System.Diagnostics.CodeAnalysis;
 using Godot;
 
-namespace DEYU.GDUtilities.UnityAtlasTextureCreatorUtility;
+namespace GodotTextureSlicer;
 // This script contains only the public apis of the UnityAtlasTextureCreator
 
 /// <summary>
@@ -18,22 +18,17 @@ public partial class UnityAtlasTextureCreator : Control
     /// <param name="editorPlugin"></param>
     public void Initialize(EditorPlugin editorPlugin)
     {
-        m_EditorPlugin = editorPlugin;
+        _editorPlugin = editorPlugin;
 
-#if GODOT4_2_OR_GREATER
         var editorInterface = EditorInterface.Singleton;
         Theme = editorInterface.GetEditorTheme();
-#else
-        var editorInterface = editorPlugin.GetEditorInterface();
-        Theme = editorInterface.GetBaseControl().GetEditorTheme();
-#endif
-        m_EditorFileSystem = editorInterface.GetResourceFilesystem();
+        _editorFileSystem = editorInterface.GetResourceFilesystem();
         var settings = editorInterface.GetEditorSettings();
 
         InitializeSaveDiscardSection();
         InitializeAtlasTextureMiniInspector();
         InitializeTopBarSection(settings);
-        InitializePrimaryViewSection(settings);
+        InitializePrimaryViewSection();
         InitializeSlicer(settings);
 
         UpdateControls();
@@ -44,36 +39,36 @@ public partial class UnityAtlasTextureCreator : Control
     ///     Change the editing texture
     /// </summary>
     /// <param name="newTexture">New texture for editing, pass null for abort</param>
-    public void UpdateEditingTexture([AllowNull] Texture2D newTexture)
+    public void UpdateEditingTexture(Texture2D? newTexture)
     {
-        if (m_InspectingTex != null)
+        if (_inspectingTex != null)
         {
-            m_InspectingTex.Changed -= OnTexChanged;
-            m_InspectingTex = null;
-            m_EditingAtlasTexture.Clear();
-            m_InspectingAtlasTextureInfo = null;
+            _inspectingTex.Changed -= OnTexChanged;
+            _inspectingTex = null;
+            _editingAtlasTexture.Clear();
+            _inspectingAtlasTextureInfo = null;
             ResetInspectingMetrics();
             HideSlicerMenu();
-            AtlasTextureSlicerButton.SetPressedNoSignal(false);
+            AtlasTextureSlicerButton!.SetPressedNoSignal(false);
         }
 
-        m_InspectingTex = newTexture;
+        _inspectingTex = newTexture;
 
         UpdateControls();
 
-        if (m_InspectingTex == null)
+        if (_inspectingTex == null)
         {
             HideSlicerMenu();
             return;
         }
 
-        m_InspectingTexName = GdPath.GetFileNameWithoutExtension(m_InspectingTex.ResourcePath);
-        m_CurrentSourceTexturePath = GdPath.GetDirectoryName(m_InspectingTex.ResourcePath);
-        RegResourceChanged(m_InspectingTex, OnTexChanged);
+        _inspectingTexName = GDPath.GetFileNameWithoutExtension(_inspectingTex.ResourcePath);
+        _currentSourceTexturePath = GDPath.GetDirectoryName(_inspectingTex.ResourcePath);
+        RegResourceChanged(_inspectingTex, OnTexChanged);
         UpdateInspectingTexture();
 
-        EditDrawer.QueueRedraw();
-        m_RequestCenter = true;
+        EditDrawer!.QueueRedraw();
+        _requestCenter = true;
     }
 }
 #endif

@@ -3,40 +3,40 @@
 
 using System.Collections.Generic;
 
-namespace DEYU.GDUtilities.UnityAtlasTextureCreatorUtility;
+namespace GodotTextureSlicer;
 // This script contains the exports and api used by the Save & Discard Section of the UnityAtlasTextureCreator
 
 public partial class UnityAtlasTextureCreator
 {
     private readonly struct ListItemReference<T>
     {
-        public T Value { get => m_BackingList[m_Index]; set => m_BackingList[m_Index] = value; }
+        public T Value { get => _backingList[_index]; set => _backingList[_index] = value; }
 
-        private readonly IList<T> m_BackingList;
-        private readonly int m_Index;
+        private readonly IList<T> _backingList;
+        private readonly int _index;
 
-        public bool IsValid => m_Index >= 0 && m_Index < m_BackingList.Count;
+        public bool IsValid => _index >= 0 && _index < _backingList.Count;
 
         public ListItemReference<T> GetNext()
         {
-            var nextIndex = m_Index + 1;
-            if (nextIndex < m_BackingList.Count) return new(m_BackingList, nextIndex);
+            var nextIndex = _index + 1;
+            if (nextIndex < _backingList.Count) return new(_backingList, nextIndex);
 
-            return new(m_BackingList, -1);
+            return new(_backingList, -1);
         }
 
         public ListItemReference<T> GetPrev()
         {
-            var previousIndex = m_Index - 1;
-            if (previousIndex > 0) return new(m_BackingList, previousIndex);
+            var previousIndex = _index - 1;
+            if (previousIndex > 0) return new(_backingList, previousIndex);
 
-            return new(m_BackingList, -1);
+            return new(_backingList, -1);
         }
 
         private ListItemReference(IList<T> backingList, int index)
         {
-            m_BackingList = backingList;
-            m_Index = index;
+            _backingList = backingList;
+            _index = index;
         }
 
         public static IEnumerable<ListItemReference<T>> CreateForEach(IList<T> list)

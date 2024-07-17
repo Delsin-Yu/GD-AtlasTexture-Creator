@@ -4,82 +4,81 @@
 using System;
 using Godot;
 
-namespace DEYU.GDUtilities.UnityAtlasTextureCreatorUtility;
+namespace GodotTextureSlicer;
 // This script contains the exports and api used by the Primary View Section of the UnityAtlasTextureCreator
 
 public partial class UnityAtlasTextureCreator
 {
-    [Export, ExportSubgroup("Primary View Section")] private Control EditDrawer { get; set; }
+    [Export, ExportSubgroup("Primary View Section")] private Control? EditDrawer { get; set; }
 
-    [Export] private Button ZoomInButton { get; set; }
-    [Export] private Button ZoomResetButton { get; set; }
-    [Export] private Button ZoomOutButton { get; set; }
-    [Export] private VScrollBar VScroll { get; set; }
-    [Export] private HScrollBar HScroll { get; set; }
+    [Export] private Button? ZoomInButton { get; set; }
+    [Export] private Button? ZoomResetButton { get; set; }
+    [Export] private Button? ZoomOutButton { get; set; }
+    [Export] private VScrollBar? VScroll { get; set; }
+    [Export] private HScrollBar? HScroll { get; set; }
 
     private enum Dragging
     {
         None = -1,
         Area = -2,
-        Handle_TopLeft = 0,
-        Handle_Top = 1,
-        Handle_TopRight = 2,
-        Handle_Right = 3,
-        Handle_BottomRight = 4,
-        Handle_Bottom = 5,
-        Handle_BottomLeft = 6,
-        Handle_Left = 7
+        HandleTopLeft = 0,
+        HandleTop = 1,
+        HandleTopRight = 2,
+        HandleRight = 3,
+        HandleBottomRight = 4,
+        HandleBottom = 5,
+        HandleBottomLeft = 6,
+        HandleLeft = 7,
     }
 
     /// <summary>
     ///     Initialize the primary view section with editor settings
     /// </summary>
-    /// <param name="settings"></param>
-    private void InitializePrimaryViewSection(EditorSettings settings)
+    private void InitializePrimaryViewSection()
     {
-        m_PreviewTex = new();
+        _previewTex = new();
 
-        EditDrawer.Draw += DrawRegion;
+        EditDrawer!.Draw += DrawRegion;
         EditDrawer.GuiInput += InputRegion;
         EditDrawer.FocusExited += ReleasePanKey;
 
-        m_DrawZoom = 1.0f;
+        _drawZoom = 1.0f;
 
         BindZoomButtons(
-            ZoomInButton,
+            ZoomInButton!,
             "Zoom Out",
-            () => ZoomOnPosition(m_DrawZoom / 1.5f, EditDrawer.Size / 2.0f),
+            () => ZoomOnPosition(_drawZoom / 1.5f, EditDrawer.Size / 2.0f),
             "ZoomLess"
         );
         BindZoomButtons(
-            ZoomResetButton,
+            ZoomResetButton!,
             "Zoom Reset",
             () => ZoomOnPosition(1.0f, EditDrawer.Size / 2.0f),
             "ZoomReset"
         );
         BindZoomButtons(
-            ZoomOutButton,
+            ZoomOutButton!,
             "Zoom In",
-            () => ZoomOnPosition(m_DrawZoom * 1.5f, EditDrawer.Size / 2.0f),
+            () => ZoomOnPosition(_drawZoom * 1.5f, EditDrawer.Size / 2.0f),
             "ZoomMore"
         );
 
-        RegRangeValueChanged(VScroll, OnScrollChanged);
-        RegRangeValueChanged(HScroll, OnScrollChanged);
+        RegRangeValueChanged(VScroll!, OnScrollChanged);
+        RegRangeValueChanged(HScroll!, OnScrollChanged);
 
         EditDrawer.AddThemeStyleboxOverride("panel", Theme.GetStylebox("panel", "Tree"));
 
 
-        m_UpdatingScroll = false;
+        _updatingScroll = false;
 
         return;
 
         void OnScrollChanged(double _)
         {
-            if (m_UpdatingScroll) return;
+            if (_updatingScroll) return;
 
-            m_DrawOffsets.X = (float)HScroll.Value;
-            m_DrawOffsets.Y = (float)VScroll.Value;
+            _drawOffsets.X = (float)HScroll!.Value;
+            _drawOffsets.Y = (float)VScroll!.Value;
             EditDrawer.QueueRedraw();
         }
 
@@ -115,16 +114,16 @@ public partial class UnityAtlasTextureCreator
         CalculateHandlePosition(rawEndpoints2, rawEndpoints1, rawEndpoints3, out var rawEndpoints2_handle1, out var rawEndpoints2_handle2);
         CalculateHandlePosition(rawEndpoints3, rawEndpoints2, rawEndpoints0, out var rawEndpoints3_handle1, out var rawEndpoints3_handle2);
 
-        m_HandlePositionBuffer[0] = rawEndpoints0_handle1;
-        m_HandlePositionBuffer[1] = rawEndpoints0_handle2;
-        m_HandlePositionBuffer[2] = rawEndpoints1_handle1;
-        m_HandlePositionBuffer[3] = rawEndpoints1_handle2;
-        m_HandlePositionBuffer[4] = rawEndpoints2_handle1;
-        m_HandlePositionBuffer[5] = rawEndpoints2_handle2;
-        m_HandlePositionBuffer[6] = rawEndpoints3_handle1;
-        m_HandlePositionBuffer[7] = rawEndpoints3_handle2;
+        _handlePositionBuffer[0] = rawEndpoints0_handle1;
+        _handlePositionBuffer[1] = rawEndpoints0_handle2;
+        _handlePositionBuffer[2] = rawEndpoints1_handle1;
+        _handlePositionBuffer[3] = rawEndpoints1_handle2;
+        _handlePositionBuffer[4] = rawEndpoints2_handle1;
+        _handlePositionBuffer[5] = rawEndpoints2_handle2;
+        _handlePositionBuffer[6] = rawEndpoints3_handle1;
+        _handlePositionBuffer[7] = rawEndpoints3_handle2;
 
-        eightHandlePositions = m_HandlePositionBuffer.AsSpan();
+        eightHandlePositions = _handlePositionBuffer.AsSpan();
 
         return;
 
@@ -144,7 +143,7 @@ public partial class UnityAtlasTextureCreator
                 )
                .Normalized() *
                 10f /
-                m_DrawZoom;
+                _drawZoom;
 
             handle1 = position + offset;
 
@@ -154,7 +153,7 @@ public partial class UnityAtlasTextureCreator
                .Orthogonal()
                .Normalized() *
                 10f /
-                m_DrawZoom;
+                _drawZoom;
 
             handle2 = position + offset;
         }
@@ -163,22 +162,22 @@ public partial class UnityAtlasTextureCreator
     /// <summary>
     ///     Zoom the view at a specific position (for view panner scroll)
     /// </summary>
-    private void ZoomOnPositionScroll(float p_zoom, Vector2 p_position) => ZoomOnPosition(m_DrawZoom * p_zoom, p_position);
+    private void ZoomOnPositionScroll(float pZoom, Vector2 pPosition) => ZoomOnPosition(_drawZoom * pZoom, pPosition);
 
     /// <summary>
     ///     Zoom the view at a specific position
     /// </summary>
-    private void ZoomOnPosition(float p_zoom, Vector2 p_position)
+    private void ZoomOnPosition(float pZoom, Vector2 pPosition)
     {
-        if (p_zoom < 0.25 || p_zoom > 8) return;
+        if (pZoom < 0.25 || pZoom > 8) return;
 
-        var prev_zoom = m_DrawZoom;
-        m_DrawZoom = p_zoom;
-        var ofs = p_position;
-        ofs = ofs / prev_zoom - ofs / m_DrawZoom;
-        m_DrawOffsets = (m_DrawOffsets + ofs).Round();
+        var prev_zoom = _drawZoom;
+        _drawZoom = pZoom;
+        var ofs = pPosition;
+        ofs = ofs / prev_zoom - ofs / _drawZoom;
+        _drawOffsets = (_drawOffsets + ofs).Round();
 
-        EditDrawer.QueueRedraw();
+        EditDrawer!.QueueRedraw();
     }
 }
 

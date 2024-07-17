@@ -3,7 +3,7 @@
 
 using Godot;
 
-namespace DEYU.GDUtilities.UnityAtlasTextureCreatorUtility;
+namespace GodotTextureSlicer;
 
 /// <summary>
 ///     Bootstrap script for <see cref="UnityAtlasTextureCreator" />
@@ -11,7 +11,7 @@ namespace DEYU.GDUtilities.UnityAtlasTextureCreatorUtility;
 [Tool]
 public partial class UnityAtlasTextureCreatorBoot : EditorPlugin
 {
-    private UnityAtlasTextureCreator m_EditorWindow;
+    private UnityAtlasTextureCreator? _editorWindow;
 
     /// <summary>
     ///     This window is capable for editing Texture2Ds, except AtlasTexture itself
@@ -29,8 +29,8 @@ public partial class UnityAtlasTextureCreatorBoot : EditorPlugin
     /// </summary>
     public override void _Edit(GodotObject godotObject)
     {
-        if (godotObject is Texture2D texture2D) m_EditorWindow.UpdateEditingTexture(texture2D);
-        else m_EditorWindow.UpdateEditingTexture(null);
+        if (godotObject is Texture2D texture2D) _editorWindow!.UpdateEditingTexture(texture2D);
+        else _editorWindow!.UpdateEditingTexture(null);
     }
 
     /// <summary>
@@ -39,11 +39,11 @@ public partial class UnityAtlasTextureCreatorBoot : EditorPlugin
     public override void _EnterTree()
     {
         var scene = GD.Load<PackedScene>("res://addons/deyu_atlas_texture_creator_window/atlas_texture_creator_window.tscn");
-        m_EditorWindow = scene.Instantiate<UnityAtlasTextureCreator>();
+        _editorWindow = scene.Instantiate<UnityAtlasTextureCreator>();
 
-        m_EditorWindow.Initialize(this);
+        _editorWindow.Initialize(this);
 
-        AddControlToDock(DockSlot.RightBl, m_EditorWindow);
+        AddControlToDock(DockSlot.RightBl, _editorWindow);
     }
 
     /// <summary>
@@ -51,8 +51,8 @@ public partial class UnityAtlasTextureCreatorBoot : EditorPlugin
     /// </summary>
     public override void _ExitTree()
     {
-        RemoveControlFromDocks(m_EditorWindow);
-        m_EditorWindow.QueueFree();
+        RemoveControlFromDocks(_editorWindow);
+        _editorWindow!.QueueFree();
     }
 }
 #endif

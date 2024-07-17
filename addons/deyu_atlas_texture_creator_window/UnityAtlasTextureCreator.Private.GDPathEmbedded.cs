@@ -5,36 +5,41 @@ using System;
 using System.IO;
 using System.Text.RegularExpressions;
 
-namespace DEYU.GDUtilities.UnityAtlasTextureCreatorUtility;
+namespace GodotTextureSlicer;
 
 public partial class UnityAtlasTextureCreator
 {
-    private static class GdPath
+    private static partial class GDPath
     {
-        private static readonly Regex s_PrefixNameRegex = new(@"(?<captured>.+):[\/\\]*.*", RegexOptions.Compiled);
-        private static readonly Regex s_SuffixNameRegex = new(@".+:[\/\\]*(?<captured>.*)", RegexOptions.Compiled);
+        private static readonly Regex PrefixNameRegex = GetPrefixRegex();
+        private static readonly Regex SuffixNameRegex = GetSuffixRegex();
 
         public static string GetDirectoryName(string path)
         {
-            var directoryNameRaw = Path.GetDirectoryName(path);
-            return ToGdPath(directoryNameRaw);
+            var directoryNameRaw = Path.GetDirectoryName(path)!;
+            return ToGDPath(directoryNameRaw);
         }
 
         public static string GetFileNameWithoutExtension(string path) =>
             Path.GetFileNameWithoutExtension(path);
 
 
-        public static string ToGdPath(string path)
+        private static string ToGDPath(string path)
         {
             var unixStyledPath = path.Replace("\\", "/");
-            var prefixMatch = s_PrefixNameRegex.Match(unixStyledPath);
+            var prefixMatch = PrefixNameRegex.Match(unixStyledPath);
             if (!prefixMatch.Success) throw new FormatException(path);
 
-            var suffixMatch = s_SuffixNameRegex.Match(unixStyledPath);
+            var suffixMatch = SuffixNameRegex.Match(unixStyledPath);
             if (suffixMatch.Success) return $"{prefixMatch.Groups["captured"]}://{suffixMatch.Groups["captured"]}";
 
             return $"{prefixMatch.Groups["captured"]}://";
         }
+
+        [GeneratedRegex(@"(?<captured>.+):[\/\\]*.*", RegexOptions.Compiled)]
+        private static partial Regex GetPrefixRegex();
+        [GeneratedRegex(@".+:[\/\\]*(?<captured>.*)", RegexOptions.Compiled)]
+        private static partial Regex GetSuffixRegex();
     }
 }
 #endif

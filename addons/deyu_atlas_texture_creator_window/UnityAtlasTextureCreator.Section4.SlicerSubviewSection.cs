@@ -5,90 +5,90 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
-namespace DEYU.GDUtilities.UnityAtlasTextureCreatorUtility;
+namespace GodotTextureSlicer;
 // This script contains the exports and api used by the Save & Discard Section of the UnityAtlasTextureCreator
 
 public partial class UnityAtlasTextureCreator
 {
-    private readonly List<Rect2> m_SlicePreview = new();
+    private readonly List<Rect2> _slicePreview = new();
 
 
-    private SliceMethod m_CurrentSlicerMode = SliceMethod.Automatic;
+    private SliceMethod _currentSlicerMode = SliceMethod.Automatic;
 
-    [Export, ExportSubgroup("Slicer Subview Section")] private Control SlicerMenu { get; set; }
+    [Export, ExportSubgroup("Slicer Subview Section")] private Control? SlicerMenu { get; set; }
 
-    [Export] private OptionButton SlicerTypeSelection { get; set; }
-    [Export] private OptionButton PreservationMethodSelection { get; set; }
-    [Export] private Button ExecuteSliceButton { get; set; }
+    [Export] private OptionButton? SlicerTypeSelection { get; set; }
+    [Export] private OptionButton? PreservationMethodSelection { get; set; }
+    [Export] private Button? ExecuteSliceButton { get; set; }
 
-    [Export, ExportSubgroup("Slicer Subview Section/Defaults")] private SpinBox NewAtlasTextureMarginXInput { get; set; }
+    [Export, ExportSubgroup("Slicer Subview Section/Defaults")] private SpinBox? NewAtlasTextureMarginXInput { get; set; }
 
-    [Export] private SpinBox NewAtlasTextureMarginYInput { get; set; }
-    [Export] private SpinBox NewAtlasTextureMarginWInput { get; set; }
-    [Export] private SpinBox NewAtlasTextureMarginHInput { get; set; }
-    [Export] private CheckBox FilterClip { get; set; }
+    [Export] private SpinBox? NewAtlasTextureMarginYInput { get; set; }
+    [Export] private SpinBox? NewAtlasTextureMarginWInput { get; set; }
+    [Export] private SpinBox? NewAtlasTextureMarginHInput { get; set; }
+    [Export] private CheckBox? FilterClip { get; set; }
 
     [Export, ExportSubgroup("Slicer Subview Section/SliceMode - CellSize")]
-    private Control[] CellSizeGroup { get; set; }
+    private Control[]? CellSizeGroup { get; set; }
 
-    [Export] private SpinBox CellSize_PixelSizeX { get; set; }
-    [Export] private SpinBox CellSize_PixelSizeY { get; set; }
-    [Export] private SpinBox CellSize_OffsetX { get; set; }
-    [Export] private SpinBox CellSize_OffsetY { get; set; }
-    [Export] private SpinBox CellSize_PaddingX { get; set; }
-    [Export] private SpinBox CellSize_PaddingY { get; set; }
-    [Export] private CheckBox CellSize_KeepEmptyRects { get; set; }
+    [Export] private SpinBox? CellSizePixelSizeX { get; set; }
+    [Export] private SpinBox? CellSizePixelSizeY { get; set; }
+    [Export] private SpinBox? CellSizeOffsetX { get; set; }
+    [Export] private SpinBox? CellSizeOffsetY { get; set; }
+    [Export] private SpinBox? CellSizePaddingX { get; set; }
+    [Export] private SpinBox? CellSizePaddingY { get; set; }
+    [Export] private CheckBox? CellSizeKeepEmptyRects { get; set; }
 
     [Export, ExportSubgroup("Slicer Subview Section/SliceMode - CellCount")]
-    private Control[] CellCountGroup { get; set; }
+    private Control[]? CellCountGroup { get; set; }
 
-    [Export] private SpinBox CellCount_ColumnRowX { get; set; }
-    [Export] private SpinBox CellCount_ColumnRowY { get; set; }
-    [Export] private SpinBox CellCount_OffsetX { get; set; }
-    [Export] private SpinBox CellCount_OffsetY { get; set; }
-    [Export] private SpinBox CellCount_PaddingX { get; set; }
-    [Export] private SpinBox CellCount_PaddingY { get; set; }
-    [Export] private CheckBox CellCount_KeepEmptyRects { get; set; }
+    [Export] private SpinBox? CellCountColumnRowX { get; set; }
+    [Export] private SpinBox? CellCountColumnRowY { get; set; }
+    [Export] private SpinBox? CellCountOffsetX { get; set; }
+    [Export] private SpinBox? CellCountOffsetY { get; set; }
+    [Export] private SpinBox? CellCountPaddingX { get; set; }
+    [Export] private SpinBox? CellCountPaddingY { get; set; }
+    [Export] private CheckBox? CellCountKeepEmptyRects { get; set; }
 
     private SliceMethod CurrentSlicerMode
     {
-        get => m_CurrentSlicerMode;
+        get => _currentSlicerMode;
         set
         {
-            m_CurrentSlicerMode = value;
-            switch (m_CurrentSlicerMode)
+            _currentSlicerMode = value;
+            switch (_currentSlicerMode)
             {
                 case SliceMethod.Automatic:
-                    foreach (var control in CellSizeGroup)
+                    foreach (var control in CellSizeGroup!)
                     {
                         control.Hide();
                     }
 
-                    foreach (var control in CellCountGroup)
+                    foreach (var control in CellCountGroup!)
                     {
                         control.Hide();
                     }
 
                     break;
                 case SliceMethod.GridByCellSize:
-                    foreach (var control in CellCountGroup)
+                    foreach (var control in CellCountGroup!)
                     {
                         control.Hide();
                     }
 
-                    foreach (var control in CellSizeGroup)
+                    foreach (var control in CellSizeGroup!)
                     {
                         control.Show();
                     }
 
                     break;
                 case SliceMethod.GridByCellCount:
-                    foreach (var control in CellSizeGroup)
+                    foreach (var control in CellSizeGroup!)
                     {
                         control.Hide();
                     }
 
-                    foreach (var control in CellCountGroup)
+                    foreach (var control in CellCountGroup!)
                     {
                         control.Show();
                     }
@@ -114,10 +114,10 @@ public partial class UnityAtlasTextureCreator
     private void InitializeSlicer(EditorSettings settings)
     {
         RegButtonToggled(
-            AtlasTextureSlicerButton,
+            AtlasTextureSlicerButton!,
             isOn =>
             {
-                if (m_InspectingTex is null) return;
+                if (_inspectingTex is null) return;
 
                 if (isOn) ShowSlicerMenu();
                 else HideSlicerMenu();
@@ -143,35 +143,35 @@ public partial class UnityAtlasTextureCreator
                     .As<PreservationMethod>();
 
 
-        SlicerTypeSelection.AddItem("Automatic", (int)SliceMethod.Automatic);
+        SlicerTypeSelection!.AddItem("Automatic", (int)SliceMethod.Automatic);
         SlicerTypeSelection.AddItem("Grid By Cell Size", (int)SliceMethod.GridByCellSize);
         SlicerTypeSelection.AddItem("Grid By Cell Count", (int)SliceMethod.GridByCellCount);
-        RegOptionButtonItemSelected(SlicerTypeSelection, p_mode => CurrentSlicerMode = (SliceMethod)p_mode);
+        RegOptionButtonItemSelected(SlicerTypeSelection, pMode => CurrentSlicerMode = (SliceMethod)pMode);
         SlicerTypeSelection.Selected = (int)CurrentSlicerMode;
 
-        PreservationMethodSelection.AddItem("Ignore Existing (Additive)", (int)PreservationMethod.IgnoreExisting);
+        PreservationMethodSelection!.AddItem("Ignore Existing (Additive)", (int)PreservationMethod.IgnoreExisting);
         PreservationMethodSelection.AddItem("Avoid Existing (Smart)", (int)PreservationMethod.AvoidExisting);
         RegOptionButtonItemSelected(PreservationMethodSelection, mode => CurrentPreservationMethod = (PreservationMethod)mode);
         PreservationMethodSelection.Selected = (int)CurrentPreservationMethod;
 
-        ExecuteSliceButton.Pressed += PerformSlice;
+        ExecuteSliceButton!.Pressed += PerformSlice;
 
-        RegRangeValueChanged(CellSize_PixelSizeX, PreviewCurrentSliceDeferred);
-        RegRangeValueChanged(CellSize_PixelSizeY, PreviewCurrentSliceDeferred);
-        RegRangeValueChanged(CellSize_OffsetX, PreviewCurrentSliceDeferred);
-        RegRangeValueChanged(CellSize_OffsetY, PreviewCurrentSliceDeferred);
-        RegRangeValueChanged(CellSize_PaddingX, PreviewCurrentSliceDeferred);
-        RegRangeValueChanged(CellSize_PaddingY, PreviewCurrentSliceDeferred);
-        RegButtonToggled(CellSize_KeepEmptyRects, PreviewCurrentSliceDeferred);
-        RegRangeValueChanged(CellCount_ColumnRowX, PreviewCurrentSliceDeferred);
-        RegRangeValueChanged(CellCount_ColumnRowY, PreviewCurrentSliceDeferred);
-        RegRangeValueChanged(CellCount_OffsetX, PreviewCurrentSliceDeferred);
-        RegRangeValueChanged(CellCount_OffsetY, PreviewCurrentSliceDeferred);
-        RegRangeValueChanged(CellCount_PaddingX, PreviewCurrentSliceDeferred);
-        RegRangeValueChanged(CellCount_PaddingY, PreviewCurrentSliceDeferred);
-        RegButtonToggled(CellCount_KeepEmptyRects, PreviewCurrentSliceDeferred);
+        RegRangeValueChanged(CellSizePixelSizeX!, PreviewCurrentSliceDeferred);
+        RegRangeValueChanged(CellSizePixelSizeY!, PreviewCurrentSliceDeferred);
+        RegRangeValueChanged(CellSizeOffsetX!, PreviewCurrentSliceDeferred);
+        RegRangeValueChanged(CellSizeOffsetY!, PreviewCurrentSliceDeferred);
+        RegRangeValueChanged(CellSizePaddingX!, PreviewCurrentSliceDeferred);
+        RegRangeValueChanged(CellSizePaddingY!, PreviewCurrentSliceDeferred);
+        RegButtonToggled(CellSizeKeepEmptyRects!, PreviewCurrentSliceDeferred);
+        RegRangeValueChanged(CellCountColumnRowX!, PreviewCurrentSliceDeferred);
+        RegRangeValueChanged(CellCountColumnRowY!, PreviewCurrentSliceDeferred);
+        RegRangeValueChanged(CellCountOffsetX!, PreviewCurrentSliceDeferred);
+        RegRangeValueChanged(CellCountOffsetY!, PreviewCurrentSliceDeferred);
+        RegRangeValueChanged(CellCountPaddingX!, PreviewCurrentSliceDeferred);
+        RegRangeValueChanged(CellCountPaddingY!, PreviewCurrentSliceDeferred);
+        RegButtonToggled(CellCountKeepEmptyRects!, PreviewCurrentSliceDeferred);
 
-        SlicerMenu.Hide();
+        SlicerMenu!.Hide();
     }
 
     private void PreviewCurrentSliceDeferred(double newValue) => CallDeferred(MethodName.PreviewCurrentSlice);
@@ -182,10 +182,10 @@ public partial class UnityAtlasTextureCreator
     /// </summary>
     private void ShowSlicerMenu()
     {
-        m_SlicePreview.Clear();
-        SlicerMenu.Show();
+        _slicePreview.Clear();
+        SlicerMenu!.Show();
         PreviewCurrentSlice();
-        EditDrawer.QueueRedraw();
+        EditDrawer!.QueueRedraw();
     }
 
     /// <summary>
@@ -193,42 +193,42 @@ public partial class UnityAtlasTextureCreator
     /// </summary>
     private void HideSlicerMenu()
     {
-        m_SlicePreview.Clear();
-        SlicerMenu.Hide();
-        EditDrawer.QueueRedraw();
+        _slicePreview.Clear();
+        SlicerMenu!.Hide();
+        EditDrawer!.QueueRedraw();
     }
 
     /// <summary>
     ///     Perform the selected slicing mode (<see cref="CurrentSlicerMode" />), and creates the corresponding
-    ///     <see cref="EditingAtlasTextureInfo" /> into <see cref="m_EditingAtlasTexture" />
+    ///     <see cref="EditingAtlasTextureInfo" /> into <see cref="_editingAtlasTexture" />
     /// </summary>
     private void PerformSlice()
     {
-        m_SlicePreview.Clear();
+        _slicePreview.Clear();
 
         switch (CurrentSlicerMode)
         {
             case SliceMethod.Automatic:
-                CalculateAutomaticSlice(m_InspectingTex, m_SlicePreview);
+                CalculateAutomaticSlice(_inspectingTex!, _slicePreview);
                 break;
             case SliceMethod.GridByCellSize:
                 CalculateByCellSizeSlice(
-                    m_InspectingTex,
-                    m_SlicePreview,
-                    new(Mathf.RoundToInt(CellSize_PixelSizeX.Value), Mathf.RoundToInt(CellSize_PixelSizeY.Value)),
-                    new((float)CellSize_OffsetX.Value, (float)CellSize_OffsetY.Value),
-                    new((float)CellSize_PaddingX.Value, (float)CellSize_PaddingY.Value),
-                    CellSize_KeepEmptyRects.ButtonPressed
+                    _inspectingTex!,
+                    _slicePreview,
+                    new(Mathf.RoundToInt(CellSizePixelSizeX!.Value), Mathf.RoundToInt(CellSizePixelSizeY!.Value)),
+                    new((float)CellSizeOffsetX!.Value, (float)CellSizeOffsetY!.Value),
+                    new((float)CellSizePaddingX!.Value, (float)CellSizePaddingY!.Value),
+                    CellSizeKeepEmptyRects!.ButtonPressed
                 );
                 break;
             case SliceMethod.GridByCellCount:
                 CalculateByCellCountSlice(
-                    m_InspectingTex,
-                    m_SlicePreview,
-                    new(Mathf.RoundToInt(CellCount_ColumnRowX.Value), Mathf.RoundToInt(CellCount_ColumnRowY.Value)),
-                    new((float)CellCount_OffsetX.Value, (float)CellCount_OffsetY.Value),
-                    new((float)CellCount_PaddingX.Value, (float)CellCount_PaddingY.Value),
-                    CellCount_KeepEmptyRects.ButtonPressed
+                    _inspectingTex!,
+                    _slicePreview,
+                    new(Mathf.RoundToInt(CellCountColumnRowX!.Value), Mathf.RoundToInt(CellCountColumnRowY!.Value)),
+                    new((float)CellCountOffsetX!.Value, (float)CellCountOffsetY!.Value),
+                    new((float)CellCountPaddingX!.Value, (float)CellCountPaddingY!.Value),
+                    CellCountKeepEmptyRects!.ButtonPressed
                 );
                 break;
             default:
@@ -236,31 +236,31 @@ public partial class UnityAtlasTextureCreator
         }
 
         if (CurrentPreservationMethod is PreservationMethod.AvoidExisting)
-            for (var i = 0; i < m_SlicePreview.Count; i++)
+            for (var i = 0; i < _slicePreview.Count; i++)
             {
-                var current = m_SlicePreview[i];
+                var current = _slicePreview[i];
 
-                if (!m_EditingAtlasTexture.Any(editingAtlasTextureInfo => editingAtlasTextureInfo.Region.Intersects(current))) continue;
+                if (!_editingAtlasTexture.Any(editingAtlasTextureInfo => editingAtlasTextureInfo.Region.Intersects(current))) continue;
 
-                m_SlicePreview.RemoveAt(i);
+                _slicePreview.RemoveAt(i);
                 i--;
             }
 
-        var filterClip = FilterClip.ButtonPressed;
+        var filterClip = FilterClip!.ButtonPressed;
 
         var margin = new Rect2(
-            (float)NewAtlasTextureMarginXInput.Value,
-            (float)NewAtlasTextureMarginYInput.Value,
-            (float)NewAtlasTextureMarginWInput.Value,
-            (float)NewAtlasTextureMarginHInput.Value
+            (float)NewAtlasTextureMarginXInput!.Value,
+            (float)NewAtlasTextureMarginYInput!.Value,
+            (float)NewAtlasTextureMarginWInput!.Value,
+            (float)NewAtlasTextureMarginHInput!.Value
         );
 
-        foreach (var slice in m_SlicePreview)
+        foreach (var slice in _slicePreview)
         {
             CreateSlice(slice, margin, filterClip);
         }
 
-        m_SlicePreview.Clear();
+        _slicePreview.Clear();
         UpdateControls();
     }
 
@@ -270,28 +270,28 @@ public partial class UnityAtlasTextureCreator
     /// <exception cref="ArgumentOutOfRangeException"></exception>
     private void PreviewCurrentSlice()
     {
-        m_SlicePreview.Clear();
+        _slicePreview.Clear();
         switch (CurrentSlicerMode)
         {
             case SliceMethod.Automatic:
                 break;
             case SliceMethod.GridByCellSize:
                 CalculateByCellSizeSlice(
-                    m_InspectingTex,
-                    m_SlicePreview,
-                    new(Mathf.RoundToInt(CellSize_PixelSizeX.Value), Mathf.RoundToInt(CellSize_PixelSizeY.Value)),
-                    new((float)CellSize_OffsetX.Value, (float)CellSize_OffsetY.Value),
-                    new((float)CellSize_PaddingX.Value, (float)CellSize_PaddingY.Value),
+                    _inspectingTex!,
+                    _slicePreview,
+                    new(Mathf.RoundToInt(CellSizePixelSizeX!.Value), Mathf.RoundToInt(CellSizePixelSizeY!.Value)),
+                    new((float)CellSizeOffsetX!.Value, (float)CellSizeOffsetY!.Value),
+                    new((float)CellSizePaddingX!.Value, (float)CellSizePaddingY!.Value),
                     true
                 );
                 break;
             case SliceMethod.GridByCellCount:
                 CalculateByCellCountSlice(
-                    m_InspectingTex,
-                    m_SlicePreview,
-                    new(Mathf.RoundToInt(CellCount_ColumnRowX.Value), Mathf.RoundToInt(CellCount_ColumnRowY.Value)),
-                    new((float)CellCount_OffsetX.Value, (float)CellCount_OffsetY.Value),
-                    new((float)CellCount_PaddingX.Value, (float)CellCount_PaddingY.Value),
+                    _inspectingTex!,
+                    _slicePreview,
+                    new(Mathf.RoundToInt(CellCountColumnRowX!.Value), Mathf.RoundToInt(CellCountColumnRowY!.Value)),
+                    new((float)CellCountOffsetX!.Value, (float)CellCountOffsetY!.Value),
+                    new((float)CellCountPaddingX!.Value, (float)CellCountPaddingY!.Value),
                     true
                 );
                 break;
@@ -299,7 +299,39 @@ public partial class UnityAtlasTextureCreator
                 throw new ArgumentOutOfRangeException();
         }
 
-        EditDrawer.QueueRedraw();
+        EditDrawer!.QueueRedraw();
+    }
+
+    private static bool[,] CreateAlphaMask(Image image, out int width, out int height)
+    {
+        if (image.IsCompressed())
+        {
+            var decompressed = (Image)image.Duplicate();
+            decompressed.Decompress();
+            image = decompressed;
+        }
+
+        var bitmap = new Bitmap();
+        bitmap.CreateFromImageAlpha(image, 0f);
+        (width, height) = bitmap.GetSize();
+        
+        var bitmask = bitmap.ConvertToImage().GetData()!;
+        
+        (width, height) = bitmap.GetSize();
+        
+        var mask = new bool[width, height];
+        
+        for (var x = 0; x < width; x++)
+        for (var y = 0; y < height; y++)
+        {
+            var index = width * y + x;
+            var value = bitmask[index] != 0;
+            
+            mask[x, y] = value;
+        }
+
+        
+        return mask;
     }
 
     /// <summary>
@@ -307,25 +339,23 @@ public partial class UnityAtlasTextureCreator
     /// </summary>
     private static void CalculateAutomaticSlice(Texture2D texture, IList<Rect2> sliceData)
     {
-        if (texture is null) return;
-
         sliceData.Clear();
 
-        var (textureWidth, textureHeight) = texture.GetSize();
+        var mask = CreateAlphaMask(texture.GetImage(), out var width, out var height);
 
-        for (var y = 0; y < textureHeight; y++)
+        for (var y = 0; y < height; y++)
         {
-            for (var x = 0; x < textureWidth; x++)
+            for (var x = 0; x < width; x++)
             {
-                if (!IsPixelOpaqueImpl(texture, x, y)) continue;
+                if (!mask[x, y]) continue;
                 var found = false;
-                foreach (var e in ListItemReference<Rect2>.CreateForEach(sliceData))
+                foreach (var itemReference in ListItemReference<Rect2>.CreateForEach(sliceData))
                 {
-                    var grown = e.Value.Grow(1.5f);
+                    var grown = itemReference.Value.Grow(1.5f);
                     if (!grown.HasPoint(new(x, y))) continue;
-                    e.Value = e.Value.Expand(new(x, y));
-                    e.Value = e.Value.Expand(new(x + 1, y + 1));
-                    x = (int)(e.Value.Position.X + e.Value.Size.X - 1);
+                    itemReference.Value = itemReference.Value.Expand(new(x, y));
+                    itemReference.Value = itemReference.Value.Expand(new(x + 1, y + 1));
+                    x = (int)(itemReference.Value.Position.X + itemReference.Value.Size.X - 1);
                     var merged = true;
                     while (merged)
                     {
@@ -340,13 +370,13 @@ public partial class UnityAtlasTextureCreator
                                 queue_erase = false;
                             }
 
-                            if (!f.IsValid || !e.IsValid) break;
+                            if (!f.IsValid || !itemReference.IsValid) break;
 
-                            if (f.Value == e.Value) continue;
+                            if (f.Value == itemReference.Value) continue;
 
-                            if (!e.Value.Grow(1).Intersects(f.Value)) continue;
-                            e.Value = e.Value.Expand(f.Value.Position);
-                            e.Value = e.Value.Expand(f.Value.Position + f.Value.Size);
+                            if (!itemReference.Value.Grow(1).Intersects(f.Value)) continue;
+                            itemReference.Value = itemReference.Value.Expand(f.Value.Position);
+                            itemReference.Value = itemReference.Value.Expand(f.Value.Position + f.Value.Size);
                             var prevF = f.GetPrev();
                             if (prevF.IsValid)
                             {

@@ -4,7 +4,7 @@
 using System.Runtime.InteropServices;
 using Godot;
 
-namespace DEYU.GDUtilities.UnityAtlasTextureCreatorUtility;
+namespace GodotTextureSlicer;
 // This script contains the api used by the Input Handling submodule from the Primary View Section of the UnityAtlasTextureCreator
 
 public partial class UnityAtlasTextureCreator
@@ -12,13 +12,13 @@ public partial class UnityAtlasTextureCreator
     /// <summary>
     ///     Core method for handling input events related to the region editor
     /// </summary>
-    private void InputRegion(InputEvent p_input)
+    private void InputRegion(InputEvent pInput)
     {
-        if (m_InspectingTex is null) return;
+        if (_inspectingTex is null) return;
 
-        if (ViewPanner.ProcessGuiInput(p_input, new())) return;
+        if (ViewPanner.ProcessGuiInput(pInput, new())) return;
 
-        switch (p_input)
+        switch (pInput)
         {
             case InputEventMouseMotion mouseMotionEvent:
                 ProcessMouseMotion(mouseMotionEvent);
@@ -27,11 +27,11 @@ public partial class UnityAtlasTextureCreator
                 ProcessMouseButton(mouseButtonEvent);
                 break;
             case InputEventMagnifyGesture magnify_gesture:
-                ZoomOnPosition(m_DrawZoom * magnify_gesture.Factor, magnify_gesture.Position);
+                ZoomOnPosition(_drawZoom * magnify_gesture.Factor, magnify_gesture.Position);
                 break;
             case InputEventPanGesture pan_gesture:
-                HScroll.Value += HScroll.Page * pan_gesture.Delta.X / 8;
-                VScroll.Value += VScroll.Page * pan_gesture.Delta.Y / 8;
+                HScroll!.Value += HScroll.Page * pan_gesture.Delta.X / 8;
+                VScroll!.Value += VScroll.Page * pan_gesture.Delta.Y / 8;
                 break;
         }
     }
@@ -39,12 +39,12 @@ public partial class UnityAtlasTextureCreator
     /// <summary>
     ///     SubMethod for update information during mouse dragging
     /// </summary>
-    private void OnMouseDragUpdate(in Vector2 localMousePosition, out Dragging draggingHandleIndex, out Vector2 draggingHandlePosition, out EditingAtlasTextureInfo inspectingAtlasTextureInfo)
+    private void OnMouseDragUpdate(in Vector2 localMousePosition, out Dragging draggingHandleIndex, out Vector2 draggingHandlePosition, out EditingAtlasTextureInfo? inspectingAtlasTextureInfo)
     {
-        var drawZoom = 11.25f / m_DrawZoom;
+        var drawZoom = 11.25f / _drawZoom;
 
         // Handle
-        var editingAtlasTextureInfosSpanView = CollectionsMarshal.AsSpan(m_EditingAtlasTexture);
+        var editingAtlasTextureInfosSpanView = CollectionsMarshal.AsSpan(_editingAtlasTexture);
         foreach (var editingAtlasTextureInfo in editingAtlasTextureInfosSpanView)
         {
             GetHandlePositionsForRectFrame(editingAtlasTextureInfo.Region, out var handlePositions);
@@ -73,7 +73,7 @@ public partial class UnityAtlasTextureCreator
         }
 
         // Create
-        draggingHandleIndex = Dragging.Handle_BottomRight;
+        draggingHandleIndex = Dragging.HandleBottomRight;
         draggingHandlePosition = localMousePosition;
         inspectingAtlasTextureInfo = null;
     }
@@ -85,45 +85,45 @@ public partial class UnityAtlasTextureCreator
     {
         if (!mouseButton.Pressed)
         {
-            if (!m_IsDragging) return;
+            if (!_isDragging) return;
             FlushRegionModifyingBuffer();
-            m_IsDragging = false;
-            EditDrawer.QueueRedraw();
+            _isDragging = false;
+            EditDrawer!.QueueRedraw();
             return;
         }
 
         if (!mouseButton.ButtonMask.HasFlag(MouseButtonMask.Left)) return;
 
-        if (m_IsDragging) return;
+        if (_isDragging) return;
 
-        var localMousePosition = (mouseButton.Position + m_DrawOffsets * m_DrawZoom) / m_DrawZoom;
+        var localMousePosition = (mouseButton.Position + _drawOffsets * _drawZoom) / _drawZoom;
 
         OnMouseDragUpdate(
             localMousePosition,
-            out m_DraggingHandle,
-            out m_DraggingHandlePosition,
-            out m_InspectingAtlasTextureInfo
+            out _draggingHandle,
+            out _draggingHandlePosition,
+            out _inspectingAtlasTextureInfo
         );
 
-        m_IsDragging = true;
+        _isDragging = true;
 
-        if (m_InspectingAtlasTextureInfo is null)
+        if (_inspectingAtlasTextureInfo is null)
         {
-            m_DraggingMousePositionOffset = Vector2.Zero;
-            m_DraggingHandleStartRegion = new(localMousePosition, Vector2.Zero);
-            m_ModifyingRegionBuffer = m_DraggingHandleStartRegion;
+            _draggingMousePositionOffset = Vector2.Zero;
+            _draggingHandleStartRegion = new(localMousePosition, Vector2.Zero);
+            _modifyingRegionBuffer = _draggingHandleStartRegion;
             ResetInspectingMetrics();
         }
         else
         {
-            m_DraggingMousePositionOffset = localMousePosition - m_DraggingHandlePosition;
-            m_DraggingHandleStartRegion = m_InspectingAtlasTextureInfo.Region;
-            m_ModifyingRegionBuffer = m_DraggingHandleStartRegion;
+            _draggingMousePositionOffset = localMousePosition - _draggingHandlePosition;
+            _draggingHandleStartRegion = _inspectingAtlasTextureInfo.Region;
+            _modifyingRegionBuffer = _draggingHandleStartRegion;
             UpdateControls();
-            UpdateInspectingMetrics(m_InspectingAtlasTextureInfo);
+            UpdateInspectingMetrics(_inspectingAtlasTextureInfo);
         }
 
-        EditDrawer.QueueRedraw();
+        EditDrawer!.QueueRedraw();
     }
 
     /// <summary>
@@ -133,21 +133,21 @@ public partial class UnityAtlasTextureCreator
     {
         if (!mouseMotion.ButtonMask.HasFlag(MouseButtonMask.Left)) return;
 
-        if (!m_IsDragging) return;
+        if (!_isDragging) return;
 
-        var newMousePosition = (mouseMotion.Position + m_DrawOffsets * m_DrawZoom) / m_DrawZoom;
-        var diff = newMousePosition + m_DraggingMousePositionOffset - m_DraggingHandlePosition;
+        var newMousePosition = (mouseMotion.Position + _drawOffsets * _drawZoom) / _drawZoom;
+        var diff = newMousePosition + _draggingMousePositionOffset - _draggingHandlePosition;
 
-        var region = m_DraggingHandleStartRegion;
+        var region = _draggingHandleStartRegion;
 
-        if (m_DraggingHandle is Dragging.Area) region.Position += diff;
-        else region = CalculateOffset(region, m_DraggingHandle, diff);
+        if (_draggingHandle is Dragging.Area) region.Position += diff;
+        else region = CalculateOffset(region, _draggingHandle, diff);
 
-        if (m_CurrentSnapMode is SnapMode.PixelSnap) region = new(region.Position.Round(), region.Size.Round());
+        if (_currentSnapMode is SnapMode.PixelSnap) region = new(region.Position.Round(), region.Size.Round());
 
-        m_ModifyingRegionBuffer = region;
+        _modifyingRegionBuffer = region;
 
-        EditDrawer.QueueRedraw();
+        EditDrawer!.QueueRedraw();
     }
 
     /// <summary>
@@ -156,25 +156,25 @@ public partial class UnityAtlasTextureCreator
     private static Rect2 CalculateOffset(Rect2 region, Dragging dragging, Vector2 diff) =>
         dragging switch
         {
-            Dragging.Handle_TopLeft => region.GrowIndividual(-diff.X, -diff.Y, 0, 0),
-            Dragging.Handle_Top => region.GrowIndividual(0, -diff.Y, 0, 0),
-            Dragging.Handle_TopRight => region.GrowIndividual(0, -diff.Y, diff.X, 0),
-            Dragging.Handle_Right => region.GrowIndividual(0, 0, diff.X, 0),
-            Dragging.Handle_BottomRight => region.GrowIndividual(0, 0, diff.X, diff.Y),
-            Dragging.Handle_Bottom => region.GrowIndividual(0, 0, 0, diff.Y),
-            Dragging.Handle_BottomLeft => region.GrowIndividual(-diff.X, 0, 0, diff.Y),
-            Dragging.Handle_Left => region.GrowIndividual(-diff.X, 0, 0, 0),
+            Dragging.HandleTopLeft => region.GrowIndividual(-diff.X, -diff.Y, 0, 0),
+            Dragging.HandleTop => region.GrowIndividual(0, -diff.Y, 0, 0),
+            Dragging.HandleTopRight => region.GrowIndividual(0, -diff.Y, diff.X, 0),
+            Dragging.HandleRight => region.GrowIndividual(0, 0, diff.X, 0),
+            Dragging.HandleBottomRight => region.GrowIndividual(0, 0, diff.X, diff.Y),
+            Dragging.HandleBottom => region.GrowIndividual(0, 0, 0, diff.Y),
+            Dragging.HandleBottomLeft => region.GrowIndividual(-diff.X, 0, 0, diff.Y),
+            Dragging.HandleLeft => region.GrowIndividual(-diff.X, 0, 0, 0),
             _ => region
         };
 
     /// <summary>
     ///     Pan the view
     /// </summary>
-    private void Pan(Vector2 p_scroll_vec)
+    private void Pan(Vector2 pScrollVec)
     {
-        p_scroll_vec /= m_DrawZoom;
-        HScroll.Value -= p_scroll_vec.X;
-        VScroll.Value -= p_scroll_vec.Y;
+        pScrollVec /= _drawZoom;
+        HScroll!.Value -= pScrollVec.X;
+        VScroll!.Value -= pScrollVec.Y;
     }
 
     /// <summary>
@@ -182,33 +182,33 @@ public partial class UnityAtlasTextureCreator
     /// </summary>
     private void CreateSlice(in Rect2 region, in Rect2 margin, bool filterClip)
     {
-        m_InspectingAtlasTextureInfo =
+        _inspectingAtlasTextureInfo =
             EditingAtlasTextureInfo.CreateEmpty(
                 region,
-                m_InspectingTexName,
+                _inspectingTexName!,
                 margin,
                 filterClip,
-                m_EditingAtlasTexture
+                _editingAtlasTexture
             );
-        m_EditingAtlasTexture.Add(m_InspectingAtlasTextureInfo);
-        UpdateInspectingMetrics(m_InspectingAtlasTextureInfo);
+        _editingAtlasTexture.Add(_inspectingAtlasTextureInfo);
+        UpdateInspectingMetrics(_inspectingAtlasTextureInfo);
     }
 
     /// <summary>
     ///     Called when releasing mouse drag, this function applies the info of current dragging rect (
-    ///     <see cref="m_ModifyingRegionBuffer" />>) into the <see cref="m_InspectingAtlasTextureInfo" />
+    ///     <see cref="_modifyingRegionBuffer" />>) into the <see cref="_inspectingAtlasTextureInfo" />
     /// </summary>
     private void FlushRegionModifyingBuffer()
     {
-        if (m_InspectingAtlasTextureInfo is null)
+        if (_inspectingAtlasTextureInfo is null)
         {
-            if (!m_ModifyingRegionBuffer.HasArea()) return;
-            CreateSlice(m_ModifyingRegionBuffer, new(), false);
+            if (!_modifyingRegionBuffer.HasArea()) return;
+            CreateSlice(_modifyingRegionBuffer, new(), false);
         }
         else
         {
-            if (!m_InspectingAtlasTextureInfo.TrySetRegion(m_ModifyingRegionBuffer)) return;
-            UpdateInspectingMetrics(m_InspectingAtlasTextureInfo);
+            if (!_inspectingAtlasTextureInfo.TrySetRegion(_modifyingRegionBuffer)) return;
+            UpdateInspectingMetrics(_inspectingAtlasTextureInfo);
         }
 
         UpdateControls();

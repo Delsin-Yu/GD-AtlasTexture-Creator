@@ -6,94 +6,91 @@ using System.Linq;
 using Godot;
 using Godot.Collections;
 
-namespace DEYU.GDUtilities.UnityAtlasTextureCreatorUtility;
+namespace GodotTextureSlicer;
 // This script contains the private fields and general api used by the UnityAtlasTextureCreator
 
 public partial class UnityAtlasTextureCreator
 {
-    private readonly List<EditingAtlasTextureInfo> m_EditingAtlasTexture = new();
-    private readonly Vector2[] m_HandlePositionBuffer = new Vector2[8];
-    private readonly Array m_OneLengthArray = new(new Variant[1]);
-    private string m_CurrentSourceTexturePath;
-    private Dragging m_DraggingHandle;
-    private Vector2 m_DraggingHandlePosition;
-    private Rect2 m_DraggingHandleStartRegion;
-    private Vector2 m_DraggingMousePositionOffset;
-    private Vector2 m_DrawOffsets;
-    private float m_DrawZoom;
-    private EditorFileSystem m_EditorFileSystem;
+    private readonly List<EditingAtlasTextureInfo> _editingAtlasTexture = new();
+    private readonly Vector2[] _handlePositionBuffer = new Vector2[8];
+    private readonly Array _oneLengthArray = new(new Variant[1]);
+    private string? _currentSourceTexturePath;
+    private Dragging _draggingHandle;
+    private Vector2 _draggingHandlePosition;
+    private Rect2 _draggingHandleStartRegion;
+    private Vector2 _draggingMousePositionOffset;
+    private Vector2 _drawOffsets;
+    private float _drawZoom;
+    private EditorFileSystem? _editorFileSystem;
+    private EditorPlugin? _editorPlugin;
+    private EditorUndoRedoManager? _editorUndoRedoManager;
 
-    private EditorPlugin m_EditorPlugin;
-    private EditorUndoRedoManager m_EditorUndoRedoManager;
-
-    private EditingAtlasTextureInfo m_InspectingAtlasTextureInfo;
-    private Texture2D m_InspectingTex;
-    private string m_InspectingTexName;
-    private bool m_IsDragging;
-    private Rect2 m_ModifyingRegionBuffer;
-    private CanvasTexture m_PreviewTex;
-    private bool m_RequestCenter;
-    private bool m_UpdatingScroll;
+    private EditingAtlasTextureInfo? _inspectingAtlasTextureInfo;
+    private Texture2D? _inspectingTex;
+    private string? _inspectingTexName;
+    private bool _isDragging;
+    private Rect2 _modifyingRegionBuffer;
+    private CanvasTexture? _previewTex;
+    private bool _requestCenter;
+    private bool _updatingScroll;
 
     // ReSharper disable once IdentifierTypo
-    private ViewPannerCSharpImpl m_ViewPanner;
+    private ViewPannerCSharpImpl? _viewPanner;
 
-    [NotNull]
     private ViewPannerCSharpImpl ViewPanner
     {
         get
         {
-            if (m_ViewPanner is null)
-            {
-                var settings = m_EditorPlugin.GetEditorInterface().GetEditorSettings();
+            if (_viewPanner is not null) return _viewPanner;
+            
+            var settings =  EditorInterface.Singleton.GetEditorSettings();
 
-                m_ViewPanner = new();
-                m_ViewPanner.SetCallbacks(Pan, ZoomOnPositionScroll);
-                m_ViewPanner.Setup(
-                    settings.Get("editors/panning/sub_editors_panning_scheme").As<ViewPannerCSharpImpl.ControlScheme>(),
-                    new(), // settings.GetShortcut("canvas_item_editor/pan_view"); // This api only exists in native side, Sad :(
-                    settings.Get("editors/panning/simple_panning").As<bool>()
-                );
-            }
+            _viewPanner = new(
+                Pan,
+                ZoomOnPositionScroll,
+                settings.Get("editors/panning/sub_editors_panning_scheme").As<ViewPannerCSharpImpl.ControlScheme>(),
+                new(), // settings.GetShortcut("canvas_ite_editor/pan_view"); // This api only exists in native side, Sad :(
+                settings.Get("editors/panning/simple_panning").As<bool>()
+            );
 
-            return m_ViewPanner;
+            return _viewPanner;
         }
     }
 
 
     /// <summary>
-    ///     Update all UI controls based on the status of <see cref="m_InspectingTex" />, <see cref="m_EditingAtlasTexture" />
-    ///     and <see cref="m_InspectingAtlasTextureInfo" />
+    ///     Update all UI controls based on the status of <see cref="_inspectingTex" />, <see cref="_editingAtlasTexture" />
+    ///     and <see cref="_inspectingAtlasTextureInfo" />
     /// </summary>
     private void UpdateControls()
     {
-        var isEditingAsset = m_InspectingTex is not null;
-        m_OneLengthArray[0] = !isEditingAsset;
-        PropagateCall(BaseButton.MethodName.SetDisabled, m_OneLengthArray);
-        m_OneLengthArray[0] = isEditingAsset;
-        PropagateCall(LineEdit.MethodName.SetEditable, m_OneLengthArray);
+        var isEditingAsset = _inspectingTex is not null;
+        _oneLengthArray[0] = !isEditingAsset;
+        PropagateCall(BaseButton.MethodName.SetDisabled, _oneLengthArray);
+        _oneLengthArray[0] = isEditingAsset;
+        PropagateCall(LineEdit.MethodName.SetEditable, _oneLengthArray);
 
         Modulate = isEditingAsset ? Colors.White : new(1, 1, 1, 0.5f);
 
-        var hasPendingChanges = m_EditingAtlasTexture.Any(x => x.Modified);
+        var hasPendingChanges = _editingAtlasTexture.Any(x => x.Modified);
 
         Name =
             hasPendingChanges ?
                 "AtlasTexture Creator (*)" :
                 "AtlasTexture Creator";
 
-        DiscardButton.Disabled = !hasPendingChanges;
-        SaveAndUpdateButton.Disabled = !hasPendingChanges;
+        DiscardButton!.Disabled = !hasPendingChanges;
+        SaveAndUpdateButton!.Disabled = !hasPendingChanges;
 
-        var isInspectingAtlasTexture = m_InspectingAtlasTextureInfo is not null;
+        var isInspectingAtlasTexture = _inspectingAtlasTextureInfo is not null;
 
-        m_OneLengthArray[0] = !isInspectingAtlasTexture;
-        MiniInspectorWindow.PropagateCall(BaseButton.MethodName.SetDisabled, m_OneLengthArray);
-        m_OneLengthArray[0] = isInspectingAtlasTexture;
-        MiniInspectorWindow.PropagateCall(LineEdit.MethodName.SetEditable, m_OneLengthArray);
-        MiniInspectorWindow.Modulate = m_InspectingAtlasTextureInfo is not null ? Colors.White : new(1, 1, 1, 0.5f);
+        _oneLengthArray[0] = !isInspectingAtlasTexture;
+        MiniInspectorWindow!.PropagateCall(BaseButton.MethodName.SetDisabled, _oneLengthArray);
+        _oneLengthArray[0] = isInspectingAtlasTexture;
+        MiniInspectorWindow.PropagateCall(LineEdit.MethodName.SetEditable, _oneLengthArray);
+        MiniInspectorWindow.Modulate = _inspectingAtlasTextureInfo is not null ? Colors.White : new(1, 1, 1, 0.5f);
 
-        EditDrawer.QueueRedraw();
+        EditDrawer!.QueueRedraw();
     }
 
     /// <summary>
@@ -111,22 +108,22 @@ public partial class UnityAtlasTextureCreator
     /// </summary>
     private void UpdateInspectingTexture()
     {
-        var texture = m_InspectingTex;
+        var texture = _inspectingTex;
 
         if (texture is null)
         {
-            m_PreviewTex.DiffuseTexture = null;
-            ZoomOnPosition(1.0f, EditDrawer.Size / 2.0f);
-            HScroll.Hide();
-            VScroll.Hide();
+            _previewTex!.DiffuseTexture = null;
+            ZoomOnPosition(1.0f, EditDrawer!.Size / 2.0f);
+            HScroll!.Hide();
+            VScroll!.Hide();
             EditDrawer.QueueRedraw();
             return;
         }
 
-        m_PreviewTex.TextureFilter = TextureFilterEnum.NearestWithMipmaps;
-        m_PreviewTex.DiffuseTexture = texture;
+        _previewTex!.TextureFilter = TextureFilterEnum.NearestWithMipmaps;
+        _previewTex.DiffuseTexture = texture;
 
-        EditDrawer.QueueRedraw();
+        EditDrawer!.QueueRedraw();
     }
 }
 

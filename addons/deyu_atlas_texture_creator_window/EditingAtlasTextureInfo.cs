@@ -5,26 +5,26 @@ using System.IO;
 using System.Linq;
 using Godot;
 
-namespace DEYU.GDUtilities.UnityAtlasTextureCreatorUtility;
+namespace GodotTextureSlicer;
 
-public class EditingAtlasTextureInfo
+class EditingAtlasTextureInfo
 {
-    private static readonly HashSet<string> s_InvalidFileNameChars = Path.GetInvalidFileNameChars().Select(x => x.ToString()).ToHashSet();
-    private AtlasTexture m_BackingAtlasTexture;
-    private string m_ResourcePath;
+    private static readonly HashSet<string> SInvalidFileNameChars = Path.GetInvalidFileNameChars().Select(x => x.ToString()).ToHashSet();
+    private AtlasTexture? _backingAtlasTexture;
+    private string? _resourcePath;
 
-    private EditingAtlasTextureInfo(AtlasTexture backingAtlasTexture, Rect2 region, Rect2 margin, bool filterClip, string name, string resourcePath)
+    private EditingAtlasTextureInfo(AtlasTexture? backingAtlasTexture, Rect2 region, Rect2 margin, bool filterClip, string? name, string? resourcePath)
     {
-        m_BackingAtlasTexture = backingAtlasTexture;
+        _backingAtlasTexture = backingAtlasTexture;
         Region = region;
         Margin = margin;
         FilterClip = filterClip;
         Name = name;
-        m_ResourcePath = resourcePath;
+        _resourcePath = resourcePath;
     }
 
-    public bool IsTemp => m_BackingAtlasTexture is null;
-    public string Name { get; private set; }
+    public bool IsTemp => _backingAtlasTexture is null;
+    public string? Name { get; private set; }
     public Rect2 Region { get; private set; }
     public Rect2 Margin { get; private set; }
     public bool FilterClip { get; private set; }
@@ -64,7 +64,7 @@ public class EditingAtlasTextureInfo
     public static EditingAtlasTextureInfo CreateEmpty(in Rect2 region, string textureName, in Rect2 margin, bool filterClip, IEnumerable<EditingAtlasTextureInfo> existingAtlasTextures)
     {
         var textureNameLower = textureName.ToLower();
-        var existingAtlasTextureNamesLowerCase = existingAtlasTextures.Select(x => x.Name.ToLower()).ToHashSet();
+        var existingAtlasTextureNamesLowerCase = existingAtlasTextures.Select(x => x.Name?.ToLower()).ToHashSet();
 
         var nameCounter = 0;
         string nameCandidate;
@@ -116,11 +116,11 @@ public class EditingAtlasTextureInfo
         return true;
     }
 
-    public string ApplyChanges(Texture2D sourceTexture, string sourceTextureDirectory)
+    public string? ApplyChanges(Texture2D sourceTexture, string sourceTextureDirectory)
     {
         if (!Modified) return null;
 
-        if (m_BackingAtlasTexture == null)
+        if (_backingAtlasTexture == null)
         {
             if (string.IsNullOrWhiteSpace(Name))
             {
@@ -128,37 +128,37 @@ public class EditingAtlasTextureInfo
                 return null;
             }
 
-            foreach (var invalidFileNameChar in s_InvalidFileNameChars)
+            foreach (var invalidFileNameChar in SInvalidFileNameChars)
             {
                 Name = Name.Replace(invalidFileNameChar, string.Empty);
             }
 
-            m_BackingAtlasTexture =
+            _backingAtlasTexture =
                 new()
                 {
                     Atlas = sourceTexture
                 };
-            m_ResourcePath = GdPath.Combine(sourceTextureDirectory, $"{Name}.tres");
+            _resourcePath = GdPath.Combine(sourceTextureDirectory, $"{Name}.tres");
         }
 
-        m_BackingAtlasTexture.Region = Region;
-        m_BackingAtlasTexture.Margin = Margin;
-        m_BackingAtlasTexture.FilterClip = FilterClip;
+        _backingAtlasTexture.Region = Region;
+        _backingAtlasTexture.Margin = Margin;
+        _backingAtlasTexture.FilterClip = FilterClip;
         Modified = false;
-        m_BackingAtlasTexture.TakeOverPath(m_ResourcePath);
-        ResourceSaver.Save(m_BackingAtlasTexture, m_ResourcePath);
-        return m_ResourcePath;
+        _backingAtlasTexture.TakeOverPath(_resourcePath);
+        ResourceSaver.Save(_backingAtlasTexture, _resourcePath);
+        return _resourcePath;
     }
 
     public void DiscardChanges()
     {
         if (!Modified) return;
 
-        if (m_BackingAtlasTexture == null) return;
+        if (_backingAtlasTexture == null) return;
 
-        Region = m_BackingAtlasTexture.Region;
-        Margin = m_BackingAtlasTexture.Margin;
-        FilterClip = m_BackingAtlasTexture.FilterClip;
+        Region = _backingAtlasTexture.Region;
+        Margin = _backingAtlasTexture.Margin;
+        FilterClip = _backingAtlasTexture.FilterClip;
         Modified = false;
     }
 }

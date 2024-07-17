@@ -5,27 +5,25 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
-namespace DEYU.GDUtilities.UnityAtlasTextureCreatorUtility;
+namespace GodotTextureSlicer;
 // This script contains the exports and api used by the Top Bar Section of the UnityAtlasTextureCreator
 
 public partial class UnityAtlasTextureCreator
 {
-    private SnapMode m_CurrentSnapMode = SnapMode.NoneSnap;
+    private SnapMode _currentSnapMode = SnapMode.NoneSnap;
 
-    [Export, ExportSubgroup("Top Bar Section")] private OptionButton SnapModeButton { get; set; }
-    [Export] private CheckButton AtlasTextureSlicerButton { get; set; }
-    [Export] private Button ScanAtlasInFolderButton { get; set; }
-    [Export] private Button ScanAtlasInProjectButton { get; set; }
+    [Export, ExportSubgroup("Top Bar Section")] private OptionButton? SnapModeButton { get; set; }
+    [Export] private CheckButton? AtlasTextureSlicerButton { get; set; }
+    [Export] private Button? ScanAtlasInFolderButton { get; set; }
+    [Export] private Button? ScanAtlasInProjectButton { get; set; }
 
-    private SnapMode CurrentSnapMode
+    private SnapMode CurrentSnapMode => _currentSnapMode;
+
+    private void SetCurrentSnapMode(SnapMode value)
     {
-        get => m_CurrentSnapMode;
-        set
-        {
-            m_CurrentSnapMode = value;
-            SetSpinBoxMode(CurrentSnapMode is SnapMode.PixelSnap);
-            EditDrawer?.QueueRedraw();
-        }
+        _currentSnapMode = value;
+        SetSpinBoxMode(CurrentSnapMode is SnapMode.PixelSnap);
+        EditDrawer?.QueueRedraw();
     }
 
     private enum SnapMode { NoneSnap, PixelSnap }
@@ -38,20 +36,21 @@ public partial class UnityAtlasTextureCreator
     /// <param name="settings"></param>
     private void InitializeTopBarSection(EditorSettings settings)
     {
-        CurrentSnapMode =
+        SetCurrentSnapMode(
             settings
-               .GetProjectMetadata(
+                .GetProjectMetadata(
                     "atlas_texture_editor",
                     "snap_mode",
                     Variant.From(SnapMode.PixelSnap)
                 )
-               .As<SnapMode>();
+                .As<SnapMode>()
+        );
 
-        RegOptionButtonItemSelected(SnapModeButton, pMode => CurrentSnapMode = (SnapMode)pMode);
-        RegButtonPressed(ScanAtlasInFolderButton, () => ScanAtlasTexture(ScanMode.SourceFolderOnly, m_EditingAtlasTexture));
-        RegButtonPressed(ScanAtlasInProjectButton, () => ScanAtlasTexture(ScanMode.WholeProject, m_EditingAtlasTexture));
+        RegOptionButtonItemSelected(SnapModeButton!, pMode => SetCurrentSnapMode((SnapMode)pMode));
+        RegButtonPressed(ScanAtlasInFolderButton!, () => ScanAtlasTexture(ScanMode.SourceFolderOnly, _editingAtlasTexture));
+        RegButtonPressed(ScanAtlasInProjectButton!, () => ScanAtlasTexture(ScanMode.WholeProject, _editingAtlasTexture));
 
-        SnapModeButton.Selected = (int)CurrentSnapMode;
+        SnapModeButton!.Selected = (int)CurrentSnapMode;
     }
 
     /// <summary>
@@ -60,21 +59,21 @@ public partial class UnityAtlasTextureCreator
     private void ScanAtlasTexture(ScanMode scanMode, List<EditingAtlasTextureInfo> editingAtlasTextureInfoCache)
     {
         editingAtlasTextureInfoCache.Clear();
-        m_InspectingAtlasTextureInfo = null;
+        _inspectingAtlasTextureInfo = null;
 
         var collection = new List<(AtlasTexture, string)>();
         switch (scanMode)
         {
             case ScanMode.SourceFolderOnly:
-                var sourcePath = m_InspectingTex.ResourcePath;
-                var dirPath = GdPath.GetDirectoryName(sourcePath);
+                var sourcePath = _inspectingTex!.ResourcePath;
+                var dirPath = GDPath.GetDirectoryName(sourcePath);
                 EditorFileSystemDirectory directory;
-                directory = m_EditorFileSystem.GetFilesystemPath(dirPath);
-                FindMatchingSourceTextureInDirectory(m_InspectingTex, collection, directory);
+                directory = _editorFileSystem!.GetFilesystemPath(dirPath);
+                FindMatchingSourceTextureInDirectory(_inspectingTex, collection, directory);
                 break;
             case ScanMode.WholeProject:
-                directory = m_EditorFileSystem.GetFilesystem();
-                FindMatchingSourceTextureInDirectoryRecursive(m_InspectingTex, collection, directory);
+                directory = _editorFileSystem!.GetFilesystem();
+                FindMatchingSourceTextureInDirectoryRecursive(_inspectingTex!, collection, directory);
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(scanMode), scanMode, null);
