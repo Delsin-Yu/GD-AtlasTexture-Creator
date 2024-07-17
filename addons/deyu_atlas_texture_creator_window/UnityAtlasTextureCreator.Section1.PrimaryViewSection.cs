@@ -79,7 +79,7 @@ public partial class UnityAtlasTextureCreator
 
             _drawOffsets.X = (float)HScroll!.Value;
             _drawOffsets.Y = (float)VScroll!.Value;
-            EditDrawer.QueueRedraw();
+            EditDrawer!.QueueRedraw();
         }
 
         void BindZoomButtons(Button button, string text, Action onPress, string editorIconName)
