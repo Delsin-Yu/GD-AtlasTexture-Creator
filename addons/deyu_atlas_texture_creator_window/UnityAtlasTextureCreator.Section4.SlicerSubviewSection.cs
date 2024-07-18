@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using Godot;
 
 namespace GodotTextureSlicer;
@@ -315,6 +316,8 @@ public partial class UnityAtlasTextureCreator
         var maskRect = new Rect2I(Vector2I.Zero, mask.GetSize());
 
         var polygons = mask.OpaqueToPolygons(maskRect, 0.0f).ToArray();
+
+        var rawSliceData = new List<Rect2>();
         
         foreach (var polygon in polygons)
         {
@@ -323,7 +326,23 @@ public partial class UnityAtlasTextureCreator
             {
                 rect = rect.Expand(polygon[i]);
             }
-            sliceData.Add(rect);
+            rawSliceData.Add(rect);
+        }
+        
+        // Merge Fully Encapsulated Rects
+        var rawSliceSpan = CollectionsMarshal.AsSpan(rawSliceData);
+        foreach (var slice in rawSliceSpan)
+        {
+            var isEnclosed = false;
+            foreach (var matchSlice in rawSliceSpan)
+            {
+                if (matchSlice == slice) continue;
+                if(!matchSlice.Encloses(slice)) continue;
+                isEnclosed = true;
+                break;
+            }
+            if(isEnclosed) continue;
+            sliceData.Add(slice);
         }
     }
 
