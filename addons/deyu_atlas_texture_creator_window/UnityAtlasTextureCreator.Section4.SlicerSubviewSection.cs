@@ -337,7 +337,7 @@ public partial class UnityAtlasTextureCreator
     /// <summary>
     ///     Core method for Automatic Slice Calculation
     /// </summary>
-    private static void CalculateAutomaticSlice(Texture2D texture, IList<Rect2> sliceData, bool mergeRects=true)
+    private static void CalculateAutomaticSlice(Texture2D texture, IList<Rect2> sliceData)
     {
         sliceData.Clear();
         
@@ -346,33 +346,16 @@ public partial class UnityAtlasTextureCreator
         
         var maskRect = new Rect2I(Vector2I.Zero, mask.GetSize());
 
-        var polygons = mask.OpaqueToPolygons(maskRect, 0.0f);
+        var polygons = mask.OpaqueToPolygons(maskRect, 0.0f).ToArray();
         
         foreach (var polygon in polygons)
         {
-            var rect = new Rect2(polygon.First(), Vector2.Zero);
-            for (int i = 1; i < polygon.Length; i++)
+            var rect = new Rect2(polygon[0], Vector2.Zero);
+            for (var i = 1; i < polygon.Length; i++)
             {
                 rect = rect.Expand(polygon[i]);
             }
-
-            if (!mergeRects)
-            {
-                sliceData.Add(rect);
-            }
-            else
-            {
-                var intersected = false;
-                for (var index = 0; index < sliceData.Count; index++)
-                {
-                    var existSlice = sliceData[index];
-                    if (!rect.Intersects(existSlice)) continue;
-                    sliceData[index] = existSlice.Merge(rect);
-                    intersected = true;
-                    break;
-                }
-                if (!intersected) sliceData.Add(rect);
-            }
+            sliceData.Add(rect);
         }
     }
 
