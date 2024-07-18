@@ -169,7 +169,7 @@ public partial class UnityAtlasTextureCreator
     /// </summary>
     private void ZoomOnPosition(float pZoom, Vector2 pPosition)
     {
-        if (pZoom < 0.25 || pZoom > 8) return;
+        if (pZoom < 0.1 || pZoom > 50) return;
 
         var prevZoom = _drawZoom;
         _drawZoom = pZoom;
