@@ -302,38 +302,6 @@ public partial class UnityAtlasTextureCreator
         EditDrawer!.QueueRedraw();
     }
 
-    private static bool[,] CreateAlphaMask(Image image, out int width, out int height)
-    {
-        if (image.IsCompressed())
-        {
-            var decompressed = (Image)image.Duplicate();
-            decompressed.Decompress();
-            image = decompressed;
-        }
-
-        var bitmap = new Bitmap();
-        bitmap.CreateFromImageAlpha(image, 0f);
-        (width, height) = bitmap.GetSize();
-        
-        var bitmask = bitmap.ConvertToImage().GetData()!;
-        
-        (width, height) = bitmap.GetSize();
-        
-        var mask = new bool[width, height];
-        
-        for (var x = 0; x < width; x++)
-        for (var y = 0; y < height; y++)
-        {
-            var index = width * y + x;
-            var value = bitmask[index] != 0;
-            
-            mask[x, y] = value;
-        }
-
-        
-        return mask;
-    }
-
     /// <summary>
     ///     Core method for Automatic Slice Calculation
     /// </summary>

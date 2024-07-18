@@ -17,7 +17,7 @@ public partial class UnityAtlasTextureCreator
     {
         if (_inspectingTex is null) return;
 
-        var base_tex = _inspectingTex;
+        var baseTex = _inspectingTex;
 
         var transform2D =
             new Transform2D
@@ -38,7 +38,7 @@ public partial class UnityAtlasTextureCreator
 
         var selectHandle = Theme.GetIcon("EditorHandle", "EditorIcons");
 
-        var scroll_rect = new Rect2(Vector2.Zero, base_tex.GetSize());
+        var scrollRect = new Rect2(Vector2.Zero, baseTex.GetSize());
 
         if (_isDragging) DrawRectFrame(_modifyingRegionBuffer, selectHandle, selectedColor, _draggingHandle);
         else
@@ -50,7 +50,7 @@ public partial class UnityAtlasTextureCreator
                     editingAtlasTextureInfo.Region,
                     selectHandle,
                     editingAtlasTextureInfo.IsTemp ? Colors.Cyan : color,
-                    Dragging.None
+                    Dragging.Area
                 );
             }
 
@@ -71,33 +71,33 @@ public partial class UnityAtlasTextureCreator
 
         RenderingServer.CanvasItemAddSetTransform(rid, new());
 
-        var scroll_margin = EditDrawer.Size / _drawZoom;
-        scroll_rect.Position -= scroll_margin;
-        scroll_rect.Size += scroll_margin * 2;
+        var scrollMargin = EditDrawer.Size / _drawZoom;
+        scrollRect.Position -= scrollMargin;
+        scrollRect.Size += scrollMargin * 2;
 
         _updatingScroll = true;
 
-        HScroll!.MinValue = scroll_rect.Position.X;
-        HScroll.MaxValue = scroll_rect.Position.X + scroll_rect.Size.X;
-        if (Mathf.Abs(scroll_rect.Position.X - (scroll_rect.Position.X + scroll_rect.Size.X)) <= scroll_margin.X) HScroll.Hide();
+        HScroll!.MinValue = scrollRect.Position.X;
+        HScroll.MaxValue = scrollRect.Position.X + scrollRect.Size.X;
+        if (Mathf.Abs(scrollRect.Position.X - (scrollRect.Position.X + scrollRect.Size.X)) <= scrollMargin.X) HScroll.Hide();
         else
         {
             HScroll.Show();
-            HScroll.Page = scroll_margin.X;
+            HScroll.Page = scrollMargin.X;
             HScroll.Value = _drawOffsets.X;
         }
 
-        VScroll!.MinValue = scroll_rect.Position.Y;
-        VScroll.MaxValue = scroll_rect.Position.Y + scroll_rect.Size.Y;
-        if (Mathf.Abs(scroll_rect.Position.Y - (scroll_rect.Position.Y + scroll_rect.Size.Y)) <= scroll_margin.Y)
+        VScroll!.MinValue = scrollRect.Position.Y;
+        VScroll.MaxValue = scrollRect.Position.Y + scrollRect.Size.Y;
+        if (Mathf.Abs(scrollRect.Position.Y - (scrollRect.Position.Y + scrollRect.Size.Y)) <= scrollMargin.Y)
         {
             VScroll.Hide();
-            _drawOffsets.Y = scroll_rect.Position.Y;
+            _drawOffsets.Y = scrollRect.Position.Y;
         }
         else
         {
             VScroll.Show();
-            VScroll.Page = scroll_margin.Y;
+            VScroll.Page = scrollMargin.Y;
             VScroll.Value = _drawOffsets.Y;
         }
 

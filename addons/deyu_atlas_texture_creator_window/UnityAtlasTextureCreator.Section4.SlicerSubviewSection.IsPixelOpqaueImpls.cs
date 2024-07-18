@@ -5,18 +5,18 @@ namespace GodotTextureSlicer;
 
 public partial class UnityAtlasTextureCreator
 {
-    private static Texture2D? CurrentHandlingImage;
-    private static Bitmap? ImageAlphaCache;
-    private static Rid ImageTextureRid;
+    private static Texture2D? _currentHandlingImage;
+    private static Bitmap? _imageAlphaCache;
+    private static Rid _imageTextureRid;
 
     /// <summary>
     ///     Extract the Image info from the given <paramref name="texture2D" />, Cached.
     /// </summary>
     private static Image GetImageFromTexture2D(Texture2D texture2D)
     {
-        if (!ImageTextureRid.IsValid) ImageTextureRid = RenderingServer.Texture2DCreate(texture2D.GetImage());
+        if (!_imageTextureRid.IsValid) _imageTextureRid = RenderingServer.Texture2DCreate(texture2D.GetImage());
 
-        return RenderingServer.Texture2DGet(ImageTextureRid);
+        return RenderingServer.Texture2DGet(_imageTextureRid);
     }
 
     /// <summary>
@@ -25,11 +25,11 @@ public partial class UnityAtlasTextureCreator
     /// </summary>
     private static bool IsPixelOpaqueImpl(Texture2D texture2D, int x, int y)
     {
-        if (CurrentHandlingImage != texture2D)
+        if (_currentHandlingImage != texture2D)
         {
-            ImageAlphaCache = null;
-            ImageTextureRid = new();
-            CurrentHandlingImage = texture2D;
+            _imageAlphaCache = null;
+            _imageTextureRid = new();
+            _currentHandlingImage = texture2D;
         }
 
         switch (texture2D)
@@ -37,7 +37,7 @@ public partial class UnityAtlasTextureCreator
             case ImageTexture:
             case PortableCompressedTexture2D:
             case CompressedTexture2D:
-                if (ImageAlphaCache is null)
+                if (_imageAlphaCache is null)
                 {
                     var img = GetImageFromTexture2D(texture2D);
 
@@ -49,11 +49,11 @@ public partial class UnityAtlasTextureCreator
                         img = decompressed;
                     }
 
-                    ImageAlphaCache = new();
-                    ImageAlphaCache.CreateFromImageAlpha(img);
+                    _imageAlphaCache = new();
+                    _imageAlphaCache.CreateFromImageAlpha(img);
                 }
 
-                var (aw, ah) = ImageAlphaCache.GetSize();
+                var (aw, ah) = _imageAlphaCache.GetSize();
                 if (aw == 0 || ah == 0) return true;
 
                 var imageSize = texture2D.GetSize();
@@ -64,7 +64,7 @@ public partial class UnityAtlasTextureCreator
                 x1 = Mathf.Clamp(x1, 0, aw);
                 y1 = Mathf.Clamp(y1, 0, ah);
 
-                return ImageAlphaCache.GetBit(x1, y1);
+                return _imageAlphaCache.GetBit(x1, y1);
         }
 
         return true;

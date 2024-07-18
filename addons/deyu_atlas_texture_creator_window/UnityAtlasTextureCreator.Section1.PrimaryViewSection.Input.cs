@@ -26,12 +26,12 @@ public partial class UnityAtlasTextureCreator
             case InputEventMouseButton mouseButtonEvent:
                 ProcessMouseButton(mouseButtonEvent);
                 break;
-            case InputEventMagnifyGesture magnify_gesture:
-                ZoomOnPosition(_drawZoom * magnify_gesture.Factor, magnify_gesture.Position);
+            case InputEventMagnifyGesture magnifyGesture:
+                ZoomOnPosition(_drawZoom * magnifyGesture.Factor, magnifyGesture.Position);
                 break;
-            case InputEventPanGesture pan_gesture:
-                HScroll!.Value += HScroll.Page * pan_gesture.Delta.X / 8;
-                VScroll!.Value += VScroll.Page * pan_gesture.Delta.Y / 8;
+            case InputEventPanGesture panGesture:
+                HScroll!.Value += HScroll.Page * panGesture.Delta.X / 8;
+                VScroll!.Value += VScroll.Page * panGesture.Delta.Y / 8;
                 break;
         }
     }

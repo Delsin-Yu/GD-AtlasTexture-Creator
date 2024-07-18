@@ -109,19 +109,19 @@ public partial class UnityAtlasTextureCreator
         var rawEndpoints2 = rect.Position + rect.Size;
         var rawEndpoints3 = rect.Position + new Vector2(0, rect.Size.Y);
 
-        CalculateHandlePosition(rawEndpoints0, rawEndpoints3, rawEndpoints1, out var rawEndpoints0_handle1, out var rawEndpoints0_handle2);
-        CalculateHandlePosition(rawEndpoints1, rawEndpoints0, rawEndpoints2, out var rawEndpoints1_handle1, out var rawEndpoints1_handle2);
-        CalculateHandlePosition(rawEndpoints2, rawEndpoints1, rawEndpoints3, out var rawEndpoints2_handle1, out var rawEndpoints2_handle2);
-        CalculateHandlePosition(rawEndpoints3, rawEndpoints2, rawEndpoints0, out var rawEndpoints3_handle1, out var rawEndpoints3_handle2);
+        CalculateHandlePosition(rawEndpoints0, rawEndpoints3, rawEndpoints1, out var rawEndpoints0Handle1, out var rawEndpoints0Handle2);
+        CalculateHandlePosition(rawEndpoints1, rawEndpoints0, rawEndpoints2, out var rawEndpoints1Handle1, out var rawEndpoints1Handle2);
+        CalculateHandlePosition(rawEndpoints2, rawEndpoints1, rawEndpoints3, out var rawEndpoints2Handle1, out var rawEndpoints2Handle2);
+        CalculateHandlePosition(rawEndpoints3, rawEndpoints2, rawEndpoints0, out var rawEndpoints3Handle1, out var rawEndpoints3Handle2);
 
-        _handlePositionBuffer[0] = rawEndpoints0_handle1;
-        _handlePositionBuffer[1] = rawEndpoints0_handle2;
-        _handlePositionBuffer[2] = rawEndpoints1_handle1;
-        _handlePositionBuffer[3] = rawEndpoints1_handle2;
-        _handlePositionBuffer[4] = rawEndpoints2_handle1;
-        _handlePositionBuffer[5] = rawEndpoints2_handle2;
-        _handlePositionBuffer[6] = rawEndpoints3_handle1;
-        _handlePositionBuffer[7] = rawEndpoints3_handle2;
+        _handlePositionBuffer[0] = rawEndpoints0Handle1;
+        _handlePositionBuffer[1] = rawEndpoints0Handle2;
+        _handlePositionBuffer[2] = rawEndpoints1Handle1;
+        _handlePositionBuffer[3] = rawEndpoints1Handle2;
+        _handlePositionBuffer[4] = rawEndpoints2Handle1;
+        _handlePositionBuffer[5] = rawEndpoints2Handle2;
+        _handlePositionBuffer[6] = rawEndpoints3Handle1;
+        _handlePositionBuffer[7] = rawEndpoints3Handle2;
 
         eightHandlePositions = _handlePositionBuffer.AsSpan();
 
@@ -171,10 +171,10 @@ public partial class UnityAtlasTextureCreator
     {
         if (pZoom < 0.25 || pZoom > 8) return;
 
-        var prev_zoom = _drawZoom;
+        var prevZoom = _drawZoom;
         _drawZoom = pZoom;
         var ofs = pPosition;
-        ofs = ofs / prev_zoom - ofs / _drawZoom;
+        ofs = ofs / prevZoom - ofs / _drawZoom;
         _drawOffsets = (_drawOffsets + ofs).Round();
 
         EditDrawer!.QueueRedraw();
