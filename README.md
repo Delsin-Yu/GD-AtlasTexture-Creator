@@ -1,4 +1,12 @@
-# GD-AtlasTexture-Creator
+# \[Obsolete 不再更新\] GD-AtlasTexture-Creator
+
+Please visit the [`GD-AtlasTexture-Manager`](https://github.com/Delsin-Yu/GD-AtlasTexture-Manager) repo for further updates.<br/>
+The project `GD-AtlasTexture-Creator` has migrated to pure GDScript implementation for maintenance, distribution, and stability reasons.
+<br/><br/>
+请访问 [`GD-AtlasTexture-Manager`](https://github.com/Delsin-Yu/GD-AtlasTexture-Manager) 仓库以获取后续更新。<br/>
+出于维护、分发和稳定性的原因，项目 `GD-AtlasTexture-Creator` 已迁移到完全基于 GDScript 的实现。
+
+<details>
 
 ## English
 
@@ -203,3 +211,5 @@ Avoid Existing (Smart)|区域被现有AtlasTextures占据的新AtlasTexture切�
 :-|:-
 `Discard`|放弃挂起的修改并将`主视图界面`恢复到其初始状态。
 `Create / Update`|创建所有`临时创建的AtlasTextures`，并将对`现有的AtlasTextures`的所有更改应用到项目文件系统中。
+
+</details>
